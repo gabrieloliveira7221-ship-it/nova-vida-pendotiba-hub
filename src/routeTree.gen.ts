@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcessoRouteImport } from './routes/acesso'
+import { Route as AgendaRouteImport } from './routes/agenda'
+import { Route as AtendimentosRouteImport } from './routes/atendimentos'
+import { Route as ConhecaRouteImport } from './routes/conheca'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as EventosRouteImport } from './routes/eventos'
+import { Route as MinisteriosRouteImport } from './routes/ministerios'
+import { Route as PainelRouteImport } from './routes/painel'
+import { Route as PessoasRouteImport } from './routes/pessoas'
+import { Route as RelatoriosRouteImport } from './routes/relatorios'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcessoRoute = AcessoRouteImport.update({
+  id: '/acesso',
+  path: '/acesso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgendaRoute = AgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AtendimentosRoute = AtendimentosRouteImport.update({
+  id: '/atendimentos',
+  path: '/atendimentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConhecaRoute = ConhecaRouteImport.update({
+  id: '/conheca',
+  path: '/conheca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventosRoute = EventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinisteriosRoute = MinisteriosRouteImport.update({
+  id: '/ministerios',
+  path: '/ministerios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PessoasRoute = PessoasRouteImport.update({
+  id: '/pessoas',
+  path: '/pessoas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatoriosRoute = RelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acesso': typeof AcessoRoute
+  '/agenda': typeof AgendaRoute
+  '/atendimentos': typeof AtendimentosRoute
+  '/conheca': typeof ConhecaRoute
+  '/contato': typeof ContatoRoute
+  '/eventos': typeof EventosRoute
+  '/ministerios': typeof MinisteriosRoute
+  '/painel': typeof PainelRoute
+  '/pessoas': typeof PessoasRoute
+  '/relatorios': typeof RelatoriosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acesso': typeof AcessoRoute
+  '/agenda': typeof AgendaRoute
+  '/atendimentos': typeof AtendimentosRoute
+  '/conheca': typeof ConhecaRoute
+  '/contato': typeof ContatoRoute
+  '/eventos': typeof EventosRoute
+  '/ministerios': typeof MinisteriosRoute
+  '/painel': typeof PainelRoute
+  '/pessoas': typeof PessoasRoute
+  '/relatorios': typeof RelatoriosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/acesso': typeof AcessoRoute
+  '/agenda': typeof AgendaRoute
+  '/atendimentos': typeof AtendimentosRoute
+  '/conheca': typeof ConhecaRoute
+  '/contato': typeof ContatoRoute
+  '/eventos': typeof EventosRoute
+  '/ministerios': typeof MinisteriosRoute
+  '/painel': typeof PainelRoute
+  '/pessoas': typeof PessoasRoute
+  '/relatorios': typeof RelatoriosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/acesso'
+    | '/agenda'
+    | '/atendimentos'
+    | '/conheca'
+    | '/contato'
+    | '/eventos'
+    | '/ministerios'
+    | '/painel'
+    | '/pessoas'
+    | '/relatorios'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/acesso'
+    | '/agenda'
+    | '/atendimentos'
+    | '/conheca'
+    | '/contato'
+    | '/eventos'
+    | '/ministerios'
+    | '/painel'
+    | '/pessoas'
+    | '/relatorios'
+  id:
+    | '__root__'
+    | '/'
+    | '/acesso'
+    | '/agenda'
+    | '/atendimentos'
+    | '/conheca'
+    | '/contato'
+    | '/eventos'
+    | '/ministerios'
+    | '/painel'
+    | '/pessoas'
+    | '/relatorios'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcessoRoute: typeof AcessoRoute
+  AgendaRoute: typeof AgendaRoute
+  AtendimentosRoute: typeof AtendimentosRoute
+  ConhecaRoute: typeof ConhecaRoute
+  ContatoRoute: typeof ContatoRoute
+  EventosRoute: typeof EventosRoute
+  MinisteriosRoute: typeof MinisteriosRoute
+  PainelRoute: typeof PainelRoute
+  PessoasRoute: typeof PessoasRoute
+  RelatoriosRoute: typeof RelatoriosRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +182,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/acesso': {
+      id: '/acesso'
+      path: '/acesso'
+      fullPath: '/acesso'
+      preLoaderRoute: typeof AcessoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agenda': {
+      id: '/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AgendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/atendimentos': {
+      id: '/atendimentos'
+      path: '/atendimentos'
+      fullPath: '/atendimentos'
+      preLoaderRoute: typeof AtendimentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conheca': {
+      id: '/conheca'
+      path: '/conheca'
+      fullPath: '/conheca'
+      preLoaderRoute: typeof ConhecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eventos': {
+      id: '/eventos'
+      path: '/eventos'
+      fullPath: '/eventos'
+      preLoaderRoute: typeof EventosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ministerios': {
+      id: '/ministerios'
+      path: '/ministerios'
+      fullPath: '/ministerios'
+      preLoaderRoute: typeof MinisteriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pessoas': {
+      id: '/pessoas'
+      path: '/pessoas'
+      fullPath: '/pessoas'
+      preLoaderRoute: typeof PessoasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorios': {
+      id: '/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcessoRoute: AcessoRoute,
+  AgendaRoute: AgendaRoute,
+  AtendimentosRoute: AtendimentosRoute,
+  ConhecaRoute: ConhecaRoute,
+  ContatoRoute: ContatoRoute,
+  EventosRoute: EventosRoute,
+  MinisteriosRoute: MinisteriosRoute,
+  PainelRoute: PainelRoute,
+  PessoasRoute: PessoasRoute,
+  RelatoriosRoute: RelatoriosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
