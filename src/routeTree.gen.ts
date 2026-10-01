@@ -10,14 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcessoRouteImport } from './routes/acesso'
 import { Route as AgendaRouteImport } from './routes/agenda'
 import { Route as ConhecaRouteImport } from './routes/conheca'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as MinisteriosRouteImport } from './routes/ministerios'
+import { Route as PainelRouteImport } from './routes/painel'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcessoRoute = AcessoRouteImport.update({
+  id: '/acesso',
+  path: '/acesso',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgendaRoute = AgendaRouteImport.update({
@@ -40,43 +47,78 @@ const MinisteriosRoute = MinisteriosRouteImport.update({
   path: '/ministerios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acesso': typeof AcessoRoute
   '/agenda': typeof AgendaRoute
   '/conheca': typeof ConhecaRoute
   '/contato': typeof ContatoRoute
   '/ministerios': typeof MinisteriosRoute
+  '/painel': typeof PainelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acesso': typeof AcessoRoute
   '/agenda': typeof AgendaRoute
   '/conheca': typeof ConhecaRoute
   '/contato': typeof ContatoRoute
   '/ministerios': typeof MinisteriosRoute
+  '/painel': typeof PainelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/acesso': typeof AcessoRoute
   '/agenda': typeof AgendaRoute
   '/conheca': typeof ConhecaRoute
   '/contato': typeof ContatoRoute
   '/ministerios': typeof MinisteriosRoute
+  '/painel': typeof PainelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/agenda' | '/conheca' | '/contato' | '/ministerios'
+  fullPaths:
+    | '/'
+    | '/acesso'
+    | '/agenda'
+    | '/conheca'
+    | '/contato'
+    | '/ministerios'
+    | '/painel'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/agenda' | '/conheca' | '/contato' | '/ministerios'
-  id: '__root__' | '/' | '/agenda' | '/conheca' | '/contato' | '/ministerios'
+  to:
+    | '/'
+    | '/acesso'
+    | '/agenda'
+    | '/conheca'
+    | '/contato'
+    | '/ministerios'
+    | '/painel'
+  id:
+    | '__root__'
+    | '/'
+    | '/acesso'
+    | '/agenda'
+    | '/conheca'
+    | '/contato'
+    | '/ministerios'
+    | '/painel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcessoRoute: typeof AcessoRoute
   AgendaRoute: typeof AgendaRoute
   ConhecaRoute: typeof ConhecaRoute
   ContatoRoute: typeof ContatoRoute
   MinisteriosRoute: typeof MinisteriosRoute
+  PainelRoute: typeof PainelRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -86,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acesso': {
+      id: '/acesso'
+      path: '/acesso'
+      fullPath: '/acesso'
+      preLoaderRoute: typeof AcessoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agenda': {
@@ -116,15 +165,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MinisteriosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcessoRoute: AcessoRoute,
   AgendaRoute: AgendaRoute,
   ConhecaRoute: ConhecaRoute,
   ContatoRoute: ContatoRoute,
   MinisteriosRoute: MinisteriosRoute,
+  PainelRoute: PainelRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
