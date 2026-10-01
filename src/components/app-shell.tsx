@@ -1,9 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, CalendarDays, ClipboardHeart, Home, LogOut, Menu, Users, X } from "lucide-react";
+import { BarChart3, CalendarDays, ClipboardList, Home, LogOut, Menu, Users, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Brand } from "./site-shell";
 
-const nav=[{to:"/painel" as const,label:"Visão geral",icon:Home},{to:"/pessoas" as const,label:"Pessoas",icon:Users},{to:"/atendimentos" as const,label:"Atendimentos",icon:ClipboardHeart},{to:"/eventos" as const,label:"Eventos",icon:CalendarDays},{to:"/relatorios" as const,label:"Relatórios",icon:BarChart3}];
+const nav=[{to:"/painel" as const,label:"Visão geral",icon:Home},{to:"/pessoas" as const,label:"Pessoas",icon:Users},{to:"/atendimentos" as const,label:"Atendimentos",icon:ClipboardList},{to:"/eventos" as const,label:"Eventos",icon:CalendarDays},{to:"/relatorios" as const,label:"Relatórios",icon:BarChart3}];
 
 export function AppShell({title,eyebrow="Área de gestão",children}:{title:string;eyebrow?:string;children:ReactNode}){
  const [open,setOpen]=useState(false); const path=useRouterState({select:s=>s.location.pathname});
