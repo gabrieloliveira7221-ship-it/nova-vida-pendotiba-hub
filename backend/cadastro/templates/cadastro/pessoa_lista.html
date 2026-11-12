@@ -1,0 +1,49 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}Pessoas — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}Pessoas{% endblock %}
+{% block acao_cabecalho %}<a class="botao" href="{% url 'pessoa_nova' %}">Cadastrar pessoa</a>{% endblock %}
+
+{% block conteudo %}
+<section class="cartao">
+  <div class="barra-filtros">
+    <form method="get">
+      <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Buscar por nome" aria-label="Buscar por nome">
+      <select name="bairro" aria-label="Filtrar por bairro">
+        <option value="">Todos os bairros</option>
+        {% for bairro in bairros %}
+        <option value="{{ bairro.pk }}"{% if request.GET.bairro == bairro.pk|stringformat:"s" %} selected{% endif %}>{{ bairro }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="botao botao-claro">Filtrar</button>
+      {% if request.GET.q or request.GET.bairro %}<a class="link-acao" href="{% url 'pessoas' %}">Limpar</a>{% endif %}
+    </form>
+  </div>
+
+  <div class="tabela-rolagem">
+    <table>
+      <thead>
+        <tr><th>Nome</th><th>Telefone</th><th>Bairro</th><th>Cadastro</th><th>Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for pessoa in pessoas %}
+        <tr>
+          <td><a href="{% url 'pessoa_detalhe' pessoa.pk %}"><strong>{{ pessoa.nome_completo }}</strong></a></td>
+          <td>{{ pessoa.telefone|default:"—" }}</td>
+          <td>{{ pessoa.bairro }}</td>
+          <td>{{ pessoa.data_cadastro|date:"d/m/Y" }}</td>
+          <td class="acoes">
+            <a class="link-acao" href="{% url 'pessoa_detalhe' pessoa.pk %}">Histórico</a>
+            <a class="link-acao" href="{% url 'pessoa_editar' pessoa.pk %}">Editar</a>
+            <a class="link-acao link-perigo" href="{% url 'pessoa_excluir' pessoa.pk %}">Excluir</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="vazio">Nenhuma pessoa encontrada.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "cadastro/_paginacao.html" %}
+</section>
+{% endblock %}

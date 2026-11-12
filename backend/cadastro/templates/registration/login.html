@@ -1,0 +1,25 @@
+{% extends "cadastro/base.html" %}
+
+{% block titulo %}Entrar — Nova Vida Pendotiba{% endblock %}
+
+{% block corpo %}
+<div class="pagina-login">
+  <div class="cartao caixa-login">
+    {% include "cadastro/_marca.html" %}
+    <h1>Acesso à gestão</h1>
+    <p class="texto-suave">Entre com o usuário e a senha fornecidos pela igreja.</p>
+
+    <form method="post" class="formulario">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        {% for erro in form.non_field_errors %}<p class="erro">{{ erro }}</p>{% endfor %}
+      {% endif %}
+      {% include "cadastro/_campo.html" with campo=form.username %}
+      {% include "cadastro/_campo.html" with campo=form.password %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="botao">Entrar</button>
+    </form>
+    <p><a href="{% url 'agenda' %}">Voltar para a agenda</a></p>
+  </div>
+</div>
+{% endblock %}

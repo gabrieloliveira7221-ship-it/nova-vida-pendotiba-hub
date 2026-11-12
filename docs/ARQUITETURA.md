@@ -1,54 +1,69 @@
 # Arquitetura — Nova Vida Pendotiba
 
-O sistema tem três camadas.
+O sistema é uma aplicação web em Python com três camadas, executada em contêiner Docker.
 
-## 1. Interface (navegador)
+```
+Navegador  ──HTTP──▶  Django (Python)  ──SQL──▶  PostgreSQL
+ HTML/CSS             views, forms, ORM           6 tabelas
+```
 
-Aplicação web em **React + TypeScript** (TanStack Start, Tailwind CSS), baseada no protótipo do
-Figma validado com os responsáveis da igreja. Não precisa de instalação: é acessada pelo
-navegador, no computador ou no celular.
+## 1. Interface
 
-- **Site público** (`src/routes/`): Início, Conheça-nos, Agenda, Ministérios e Contato.
-- **Área reservada** (`src/routes/_authenticated/`): só abre com usuário logado; quem não está
-  logado é redirecionado para a tela de Acesso.
+Telas em **HTML e CSS** geradas pelos templates do Django (`backend/cadastro/templates/`),
+seguindo o protótipo do Figma validado com os responsáveis da igreja. O CSS
+(`backend/cadastro/static/cadastro/estilo.css`) adapta o layout para computador e celular.
+Não há instalação: o sistema é acessado pelo navegador.
 
-## 2. Dados
+- **Área pública:** agenda de eventos e formulário de solicitação de atendimento.
+- **Área de gestão:** visão geral, pessoas, atendimentos, eventos e relatórios.
 
-Banco relacional **PostgreSQL** com as seis tabelas do modelo lógico:
+## 2. Servidor (Python + Django)
 
-| Tabela             | Conteúdo                                                   |
-|--------------------|------------------------------------------------------------|
-| `usuario`          | Quem usa a área reservada (nome, e-mail, cargo)            |
-| `bairro`           | Bairros atendidos                                          |
-| `pessoa`           | Pessoas atendidas pela igreja                              |
-| `tipo_atendimento` | Cesta básica, aconselhamento, visita, oração, encaminhamento |
-| `atendimento`      | Histórico: pessoa, tipo, data, situação e responsável      |
-| `evento`           | Agenda da igreja                                           |
+O Django recebe as requisições da interface e aplica as regras de negócio:
+
+| Arquivo      | Responsabilidade                                                       |
+|--------------|------------------------------------------------------------------------|
+| `urls.py`    | Liga cada endereço à sua tela                                          |
+| `views.py`   | Regras de cada tela: buscas, filtros, cadastro, edição, exclusão, relatórios |
+| `forms.py`   | Validação dos dados digitados                                          |
+| `models.py`  | Tabelas do banco, usadas pelo ORM do Django                            |
+| `admin.py`   | Administração: usuários da equipe, bairros e tipos de atendimento     |
+| `tests.py`   | Testes automatizados dos requisitos principais                         |
 
 Regras importantes:
 
-- **Segurança por linha (RLS):** todas as tabelas exigem usuário autenticado; visitantes não leem
-  nem gravam dados pessoais.
-- **Cadastro de usuário:** ao criar uma conta, um gatilho no banco cria a linha correspondente em
-  `usuario`.
-- **Agenda pública:** a página Agenda busca os eventos por uma função que roda no servidor e
-  devolve apenas os campos públicos do evento (nome, data, horário, local e descrição).
-- **Integridade:** chaves estrangeiras entre as tabelas; ao excluir uma pessoa, os atendimentos
-  dela são excluídos junto; a situação do atendimento só aceita `agendado`, `realizado` ou
-  `cancelado`.
+- **Acesso restrito:** toda a área de gestão exige login (`LoginRequiredMixin`); visitantes só
+  veem a agenda e o formulário de solicitação. As senhas são guardadas com hash pelo Django.
+- **Responsável:** ao registrar um atendimento ou aceitar uma solicitação, o usuário logado é
+  gravado como responsável.
+- **Histórico:** a ficha de cada pessoa lista todos os atendimentos dela, com tipo, data,
+  responsável e situação.
+- **Solicitações:** o pedido feito pelo site cria a pessoa (se ainda não existir) e um
+  atendimento com situação *Solicitado*, que a equipe aceita, realiza ou cancela.
 
-O script do banco está em `docs/sql/Banco_Nova_Vida.original.sql` e as migrações aplicadas em
-`drizzle/migrations/`.
+## 3. Dados (PostgreSQL)
 
-## 3. Back-end em Python (Django)
+| Tabela             | Conteúdo                                                        |
+|--------------------|-----------------------------------------------------------------|
+| `usuario`          | Equipe com acesso à gestão (nome, e-mail, cargo, senha)         |
+| `bairro`           | Bairros atendidos                                               |
+| `pessoa`           | Pessoas atendidas pela igreja                                   |
+| `tipo_atendimento` | Cesta básica, aconselhamento, visita, oração, encaminhamento    |
+| `atendimento`      | Pessoa, tipo, data, situação, descrição e responsável           |
+| `evento`           | Nome, data, horário, local, descrição e presença prevista       |
 
-A pasta `backend/` contém o back-end **Django** com o mesmo modelo de dados:
+As tabelas são criadas pelas migrações do Django (`backend/cadastro/migrations/`), com os
+mesmos nomes de tabelas e colunas do modelo lógico. Excluir uma pessoa exclui os atendimentos
+dela; bairros e tipos em uso não podem ser excluídos.
 
-- `cadastro/models.py`: os models, com os mesmos nomes de tabelas e colunas do modelo lógico.
-- `cadastro/admin.py`: área administrativa para cadastrar, editar, excluir, buscar e filtrar
-  pessoas, atendimentos e eventos, com o histórico dentro da ficha da pessoa.
-- `cadastro/views.py`: API em JSON (`/api/resumo/` e `/api/pessoas/`) para relatórios e consultas.
-- `docker-compose.yml`: sobe o Django com um PostgreSQL em containers, para rodar igual em
-  qualquer computador.
+## 4. Docker e hospedagem
 
-Instruções em `backend/README.md`.
+- `backend/Dockerfile` monta a imagem do sistema. Ao iniciar, o contêiner aplica as migrações,
+  cadastra bairros e tipos de atendimento, garante o usuário administrador e sobe o servidor
+  (Gunicorn).
+- `backend/docker-compose.yml` sobe o sistema e um PostgreSQL na máquina local.
+- `render.yaml` publica o mesmo contêiner no Render, com um banco PostgreSQL gerenciado.
+
+## Protótipo interativo
+
+A pasta `src/` contém um protótipo navegável em React, construído a partir das telas do Figma.

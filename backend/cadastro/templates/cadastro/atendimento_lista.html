@@ -1,0 +1,64 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}Atendimentos — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}Atendimentos sociais{% endblock %}
+{% block acao_cabecalho %}<a class="botao" href="{% url 'atendimento_novo' %}">Novo atendimento</a>{% endblock %}
+
+{% block conteudo %}
+<section class="cartao">
+  <div class="barra-filtros">
+    <form method="get">
+      <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Buscar por pessoa" aria-label="Buscar por pessoa">
+      <select name="tipo" aria-label="Filtrar por tipo">
+        <option value="">Todos os tipos</option>
+        {% for tipo in tipos %}
+        <option value="{{ tipo.pk }}"{% if request.GET.tipo == tipo.pk|stringformat:"s" %} selected{% endif %}>{{ tipo }}</option>
+        {% endfor %}
+      </select>
+      <select name="status" aria-label="Filtrar por situação">
+        <option value="">Todas as situações</option>
+        {% for valor, rotulo in situacoes %}
+        <option value="{{ valor }}"{% if request.GET.status == valor %} selected{% endif %}>{{ rotulo }}</option>
+        {% endfor %}
+      </select>
+      <input type="date" name="data" value="{{ request.GET.data }}" aria-label="Filtrar por data">
+      <button type="submit" class="botao botao-claro">Filtrar</button>
+      {% if request.GET %}<a class="link-acao" href="{% url 'atendimentos' %}">Limpar</a>{% endif %}
+    </form>
+  </div>
+
+  <div class="tabela-rolagem">
+    <table>
+      <thead>
+        <tr><th>Pessoa</th><th>Tipo</th><th>Data</th><th>Responsável</th><th>Situação</th><th>Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for atendimento in atendimentos %}
+        <tr>
+          <td><a href="{% url 'pessoa_detalhe' atendimento.pessoa.pk %}"><strong>{{ atendimento.pessoa }}</strong></a></td>
+          <td>{{ atendimento.tipo }}</td>
+          <td>{{ atendimento.data|date:"d/m/Y" }}</td>
+          <td>{{ atendimento.usuario|default:"—" }}</td>
+          <td>{% include "cadastro/_status.html" %}</td>
+          <td class="acoes">
+            {% if atendimento.status == "solicitado" %}
+              {% include "cadastro/_botao_situacao.html" with acao="aceitar" rotulo="Aceitar" %}
+            {% elif atendimento.status == "agendado" %}
+              {% include "cadastro/_botao_situacao.html" with acao="realizar" rotulo="Realizado" %}
+            {% endif %}
+            {% if atendimento.status == "solicitado" or atendimento.status == "agendado" %}
+              {% include "cadastro/_botao_situacao.html" with acao="cancelar" rotulo="Cancelar" %}
+            {% endif %}
+            <a class="link-acao" href="{% url 'atendimento_editar' atendimento.pk %}">Editar</a>
+            <a class="link-acao link-perigo" href="{% url 'atendimento_excluir' atendimento.pk %}">Excluir</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="vazio">Nenhum atendimento encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "cadastro/_paginacao.html" %}
+</section>
+{% endblock %}

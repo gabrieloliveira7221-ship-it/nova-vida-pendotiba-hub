@@ -1,0 +1,41 @@
+{% extends "cadastro/base.html" %}
+
+{% block corpo %}
+{% with pagina=request.resolver_match.url_name %}
+<div class="gestao">
+  <aside class="menu-lateral">
+    {% include "cadastro/_marca.html" %}
+    <nav>
+      <a href="{% url 'painel' %}" class="{% if pagina == 'painel' %}ativo{% endif %}">Visão geral</a>
+      <a href="{% url 'pessoas' %}" class="{% if 'pessoa' in pagina %}ativo{% endif %}">Pessoas</a>
+      <a href="{% url 'atendimentos' %}" class="{% if 'atendimento' in pagina %}ativo{% endif %}">Atendimentos</a>
+      <a href="{% url 'eventos' %}" class="{% if 'evento' in pagina %}ativo{% endif %}">Eventos</a>
+      <a href="{% url 'relatorios' %}" class="{% if pagina == 'relatorios' %}ativo{% endif %}">Relatórios</a>
+    </nav>
+    <div class="menu-usuario">
+      <div>
+        <strong>{{ user }}</strong>
+        <small>{{ user.cargo|default:user.email }}</small>
+      </div>
+      <form method="post" action="{% url 'sair' %}">
+        {% csrf_token %}
+        <button type="submit">Sair</button>
+      </form>
+    </div>
+  </aside>
+  <div class="principal">
+    <header class="cabecalho">
+      <div>
+        <p class="sobretitulo">Área de gestão</p>
+        <h1>{% block cabecalho %}{% endblock %}</h1>
+      </div>
+      {% block acao_cabecalho %}{% endblock %}
+    </header>
+    <main class="miolo">
+      {% include "cadastro/_mensagens.html" %}
+      {% block conteudo %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endwith %}
+{% endblock %}

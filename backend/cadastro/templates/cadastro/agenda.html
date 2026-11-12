@@ -1,0 +1,27 @@
+{% extends "cadastro/publico.html" %}
+
+{% block titulo %}Agenda — Nova Vida Pendotiba{% endblock %}
+
+{% block conteudo %}
+<section class="chamada">
+  <p class="sobretitulo">Agenda</p>
+  <h1 class="titulo-display">Há um lugar esperando por você.</h1>
+  <p>Confira os próximos encontros da nossa comunidade. Precisa de ajuda? <a href="{% url 'solicitar' %}">Solicite um atendimento</a>.</p>
+</section>
+
+{% for evento in eventos %}
+<article class="evento">
+  <div class="evento-data">{{ evento.data|date:"d" }}<span>{{ evento.data|date:"b"|upper }}</span></div>
+  <div>
+    <h2>{{ evento.nome }}</h2>
+    {% if evento.descricao %}<p class="texto-suave">{{ evento.descricao }}</p>{% endif %}
+    <div class="evento-info">
+      <span>{{ evento.data|date:"l" }}{% if evento.horario %}, {{ evento.horario|time:"H:i" }}{% endif %}</span>
+      {% if evento.local %}<span>{{ evento.local }}</span>{% endif %}
+    </div>
+  </div>
+</article>
+{% empty %}
+<p class="cartao cartao-corpo texto-suave">Nenhum evento agendado no momento. Volte em breve!</p>
+{% endfor %}
+{% endblock %}

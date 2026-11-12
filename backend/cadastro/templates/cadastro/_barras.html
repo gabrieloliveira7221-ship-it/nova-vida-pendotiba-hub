@@ -1,0 +1,8 @@
+{% for item in itens %}
+<div class="barra">
+  <div class="barra-topo"><strong>{{ item.rotulo }}</strong><span>{{ item.total }}</span></div>
+  <div class="barra-fundo"><div style="width: {{ item.pct }}%"></div></div>
+</div>
+{% empty %}
+<p class="texto-suave">Ainda não há dados.</p>
+{% endfor %}

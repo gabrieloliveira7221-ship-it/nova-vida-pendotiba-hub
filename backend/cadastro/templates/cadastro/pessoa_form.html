@@ -1,0 +1,22 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}{% if object %}Editar pessoa{% else %}Cadastro de pessoa{% endif %} — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}{% if object %}Editar {{ object.nome_completo }}{% else %}Cadastro de pessoa{% endif %}{% endblock %}
+
+{% block conteudo %}
+<form method="post" class="cartao cartao-corpo formulario">
+  {% csrf_token %}
+  <div class="formulario-colunas">
+    {% include "cadastro/_campo.html" with campo=form.nome_completo %}
+    {% include "cadastro/_campo.html" with campo=form.data_nascimento %}
+    {% include "cadastro/_campo.html" with campo=form.telefone %}
+    {% include "cadastro/_campo.html" with campo=form.bairro %}
+  </div>
+  {% include "cadastro/_campo.html" with campo=form.endereco %}
+  {% include "cadastro/_campo.html" with campo=form.observacoes %}
+  <div class="botoes-form">
+    <button type="submit" class="botao">Salvar</button>
+    <a class="botao botao-claro" href="{% if object %}{% url 'pessoa_detalhe' object.pk %}{% else %}{% url 'pessoas' %}{% endif %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

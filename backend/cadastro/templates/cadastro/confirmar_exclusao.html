@@ -1,0 +1,16 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}Confirmar exclusão — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}Confirmar exclusão{% endblock %}
+
+{% block conteudo %}
+<form method="post" class="cartao cartao-corpo formulario">
+  {% csrf_token %}
+  <p>Tem certeza de que deseja excluir <strong>{{ object }}</strong>?</p>
+  {% if aviso %}<p class="erro">{{ aviso }}</p>{% endif %}
+  <div class="botoes-form">
+    <button type="submit" class="botao botao-perigo">Sim, excluir</button>
+    <a class="botao botao-claro" href="{% url voltar %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

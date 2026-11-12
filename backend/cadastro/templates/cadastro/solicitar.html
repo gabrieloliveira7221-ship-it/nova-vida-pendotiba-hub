@@ -1,0 +1,25 @@
+{% extends "cadastro/publico.html" %}
+
+{% block titulo %}Solicitar atendimento — Nova Vida Pendotiba{% endblock %}
+
+{% block conteudo %}
+<section class="chamada">
+  <p class="sobretitulo">Atendimento social</p>
+  <h1 class="titulo-display">Como podemos ajudar?</h1>
+  <p>Preencha seus dados e a equipe da igreja entra em contato para agendar o atendimento.</p>
+</section>
+
+<form method="post" class="cartao cartao-corpo formulario">
+  {% csrf_token %}
+  {% include "cadastro/_campo.html" with campo=form.nome_completo %}
+  <div class="formulario-colunas">
+    {% include "cadastro/_campo.html" with campo=form.telefone %}
+    {% include "cadastro/_campo.html" with campo=form.bairro %}
+  </div>
+  {% include "cadastro/_campo.html" with campo=form.tipo %}
+  {% include "cadastro/_campo.html" with campo=form.mensagem %}
+  <div class="botoes-form">
+    <button type="submit" class="botao">Enviar solicitação</button>
+  </div>
+</form>
+{% endblock %}

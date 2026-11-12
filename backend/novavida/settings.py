@@ -1,10 +1,8 @@
 """
-Configurações do projeto Nova Vida Pendotiba (back-end Django).
+Configurações do projeto Nova Vida Pendotiba.
 
-O banco é escolhido pela variável de ambiente DATABASE_URL:
-  - sem DATABASE_URL  -> SQLite local (db.sqlite3), bom para testar no VS Code
-  - postgres://...    -> PostgreSQL (Docker, Render, etc.)
-  - mysql://...       -> MySQL (precisa do pacote mysqlclient)
+O banco vem da variável DATABASE_URL (PostgreSQL no Docker e na hospedagem).
+Sem ela, usa SQLite local, o que facilita rodar no VS Code.
 """
 import os
 from pathlib import Path
@@ -19,6 +17,16 @@ CSRF_TRUSTED_ORIGINS = [
     origem for origem in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if origem
 ]
 
+# O Render informa o endereço público do serviço nesta variável.
+if host_render := os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
+    ALLOWED_HOSTS.append(host_render)
+    CSRF_TRUSTED_ORIGINS.append(f"https://{host_render}")
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -31,6 +39,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -95,7 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
 ]
 
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "entrar"
+LOGIN_REDIRECT_URL = "painel"
+LOGOUT_REDIRECT_URL = "agenda"
 
 LANGUAGE_CODE = "pt-br"
 TIME_ZONE = "America/Sao_Paulo"
@@ -104,5 +115,15 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": (
+            "django.contrib.staticfiles.storage.StaticFilesStorage"
+            if DEBUG
+            else "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        )
+    },
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

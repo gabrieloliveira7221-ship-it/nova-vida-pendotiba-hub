@@ -1,0 +1,58 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}{{ pessoa.nome_completo }} — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}{{ pessoa.nome_completo }}{% endblock %}
+{% block acao_cabecalho %}
+<div class="botoes-form">
+  <a class="botao botao-claro" href="{% url 'pessoa_editar' pessoa.pk %}">Editar cadastro</a>
+  <a class="botao" href="{% url 'atendimento_novo' %}?pessoa={{ pessoa.pk }}">Novo atendimento</a>
+</div>
+{% endblock %}
+
+{% block conteudo %}
+<div class="grade-duas">
+  <section class="cartao">
+    <div class="cartao-corpo">
+      <p class="sobretitulo">Histórico</p>
+      <h2>Atendimentos recebidos</h2>
+    </div>
+    <div class="tabela-rolagem">
+      <table>
+        <thead>
+          <tr><th>Data</th><th>Tipo</th><th>Responsável</th><th>Situação</th></tr>
+        </thead>
+        <tbody>
+          {% for atendimento in atendimentos %}
+          <tr>
+            <td>{{ atendimento.data|date:"d/m/Y" }}</td>
+            <td>
+              {{ atendimento.tipo }}
+              {% if atendimento.descricao %}<div class="texto-suave">{{ atendimento.descricao|truncatechars:80 }}</div>{% endif %}
+            </td>
+            <td>{{ atendimento.usuario|default:"—" }}</td>
+            <td>{% include "cadastro/_status.html" %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="vazio">Nenhum atendimento registrado para esta pessoa.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cartao cartao-corpo">
+    <p class="sobretitulo">Dados pessoais</p>
+    <ul class="lista-simples">
+      <li><span class="texto-suave">Telefone</span><span>{{ pessoa.telefone|default:"—" }}</span></li>
+      <li><span class="texto-suave">Nascimento</span><span>{{ pessoa.data_nascimento|date:"d/m/Y"|default:"—" }}</span></li>
+      <li><span class="texto-suave">Bairro</span><span>{{ pessoa.bairro }}</span></li>
+      <li><span class="texto-suave">Endereço</span><span>{{ pessoa.endereco|default:"—" }}</span></li>
+      <li><span class="texto-suave">Cadastro</span><span>{{ pessoa.data_cadastro|date:"d/m/Y" }}</span></li>
+    </ul>
+    {% if pessoa.observacoes %}
+    <p class="sobretitulo espaco-acima">Observações</p>
+    <p>{{ pessoa.observacoes|linebreaksbr }}</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

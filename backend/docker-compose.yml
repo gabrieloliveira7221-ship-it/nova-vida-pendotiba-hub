@@ -15,18 +15,13 @@ services:
 
   web:
     build: .
-    command: >
-      sh -c "python manage.py makemigrations cadastro &&
-             python manage.py migrate &&
-             python manage.py popular_dados &&
-             python manage.py runserver 0.0.0.0:8000"
     environment:
       DATABASE_URL: postgres://novavida:novavida@db:5432/novavida
-      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+      DJANGO_DEBUG: "1"
+      ADMIN_USUARIO: admin
+      ADMIN_SENHA: admin12345
     ports:
       - "8000:8000"
-    volumes:
-      - .:/app
     depends_on:
       db:
         condition: service_healthy

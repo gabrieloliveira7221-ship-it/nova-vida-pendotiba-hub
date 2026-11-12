@@ -1,0 +1,22 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}{% if object %}Editar evento{% else %}Novo evento{% endif %} — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}{% if object %}Editar evento{% else %}Novo evento{% endif %}{% endblock %}
+
+{% block conteudo %}
+<form method="post" class="cartao cartao-corpo formulario">
+  {% csrf_token %}
+  <div class="formulario-colunas">
+    {% include "cadastro/_campo.html" with campo=form.nome %}
+    {% include "cadastro/_campo.html" with campo=form.data %}
+    {% include "cadastro/_campo.html" with campo=form.horario %}
+    {% include "cadastro/_campo.html" with campo=form.local %}
+    {% include "cadastro/_campo.html" with campo=form.presenca_prevista %}
+  </div>
+  {% include "cadastro/_campo.html" with campo=form.descricao %}
+  <div class="botoes-form">
+    <button type="submit" class="botao">Salvar</button>
+    <a class="botao botao-claro" href="{% url 'eventos' %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

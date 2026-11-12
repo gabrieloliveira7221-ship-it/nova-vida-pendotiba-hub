@@ -1,0 +1,58 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}Visão geral — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}Olá, {{ user }}{% endblock %}
+
+{% block conteudo %}
+<div class="grade-numeros">
+  <a class="cartao numero numero-link" href="{% url 'pessoas' %}">
+    <span class="texto-suave">Pessoas cadastradas</span>
+    <strong>{{ total_pessoas }}</strong>
+  </a>
+  <a class="cartao numero numero-link" href="{% url 'atendimentos' %}">
+    <span class="texto-suave">Atendimentos no mês</span>
+    <strong>{{ atendimentos_no_mes }}</strong>
+  </a>
+  <a class="cartao numero numero-link" href="{% url 'atendimentos' %}?status=solicitado">
+    <span class="texto-suave">Solicitações aguardando</span>
+    <strong>{{ solicitacoes }}</strong>
+  </a>
+</div>
+
+<div class="grade-duas">
+  <section class="cartao cartao-corpo">
+    <p class="sobretitulo">Atendimentos</p>
+    <h2>Últimos registros</h2>
+    <ul class="lista-simples">
+      {% for atendimento in ultimos_atendimentos %}
+      <li>
+        <div>
+          <strong>{{ atendimento.pessoa }}</strong>
+          <div class="texto-suave">{{ atendimento.tipo }} · {{ atendimento.data|date:"d/m/Y" }}</div>
+        </div>
+        {% include "cadastro/_status.html" %}
+      </li>
+      {% empty %}
+      <li class="texto-suave">Nenhum atendimento registrado ainda.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="cartao cartao-corpo destaque-escuro">
+    <p class="sobretitulo">Próximos eventos</p>
+    <ul class="lista-simples">
+      {% for evento in proximos_eventos %}
+      <li>
+        <div>
+          <strong>{{ evento.nome }}</strong>
+          <div class="texto-claro">{{ evento.data|date:"d/m" }}{% if evento.horario %} · {{ evento.horario|time:"H:i" }}{% endif %}{% if evento.local %} · {{ evento.local }}{% endif %}</div>
+        </div>
+      </li>
+      {% empty %}
+      <li class="texto-claro">Nenhum evento agendado.</li>
+      {% endfor %}
+    </ul>
+    <p><a class="botao" href="{% url 'evento_novo' %}">Novo evento</a></p>
+  </section>
+</div>
+{% endblock %}

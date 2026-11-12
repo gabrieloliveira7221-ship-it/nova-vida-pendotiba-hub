@@ -1,10 +1,3 @@
-"""
-Modelos do sistema Nova Vida Pendotiba.
-
-Seguem o modelo lógico do trabalho: nomes de tabelas (db_table) e de colunas
-(db_column) iguais aos do diagrama, para o banco gerado pelo Django bater com o
-documentado.
-"""
 import uuid
 
 from django.contrib.auth.models import AbstractUser
@@ -13,7 +6,7 @@ from django.utils import timezone
 
 
 class Usuario(AbstractUser):
-    """Quem usa a área reservada (pastores, diáconos, secretaria)."""
+    """Membro da equipe com acesso à área de gestão (pastor, diácono, secretaria)."""
 
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, db_column="id_usuario"
@@ -58,8 +51,6 @@ class TipoAtendimento(models.Model):
 
 
 class Pessoa(models.Model):
-    """Pessoa atendida ou acompanhada pela igreja."""
-
     id_pessoa = models.BigAutoField(primary_key=True)
     nome_completo = models.CharField("nome completo", max_length=150)
     data_nascimento = models.DateField("data de nascimento", null=True, blank=True)
@@ -81,6 +72,7 @@ class Pessoa(models.Model):
 
 class Atendimento(models.Model):
     class Status(models.TextChoices):
+        SOLICITADO = "solicitado", "Solicitado"
         AGENDADO = "agendado", "Agendado"
         REALIZADO = "realizado", "Realizado"
         CANCELADO = "cancelado", "Cancelado"
@@ -89,7 +81,7 @@ class Atendimento(models.Model):
     data = models.DateField("data", default=timezone.localdate)
     descricao = models.TextField("descrição", blank=True)
     status = models.CharField(
-        "status", max_length=20, choices=Status.choices, default=Status.AGENDADO
+        "situação", max_length=20, choices=Status.choices, default=Status.AGENDADO
     )
     pessoa = models.ForeignKey(
         Pessoa, on_delete=models.CASCADE, db_column="id_pessoa", related_name="atendimentos"
@@ -99,11 +91,14 @@ class Atendimento(models.Model):
         on_delete=models.PROTECT,
         db_column="id_tipo",
         related_name="atendimentos",
-        verbose_name="tipo",
+        verbose_name="tipo de atendimento",
     )
+    # Fica vazio enquanto o atendimento é só uma solicitação feita pelo site.
     usuario = models.ForeignKey(
         Usuario,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         db_column="id_usuario",
         related_name="atendimentos",
         verbose_name="responsável",
@@ -111,7 +106,7 @@ class Atendimento(models.Model):
 
     class Meta:
         db_table = "atendimento"
-        ordering = ["-data"]
+        ordering = ["-data", "-id_atendimento"]
 
     def __str__(self):
         return f"{self.tipo} — {self.pessoa} ({self.data:%d/%m/%Y})"

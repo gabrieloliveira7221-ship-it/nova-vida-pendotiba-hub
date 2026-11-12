@@ -1,0 +1,46 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}Eventos — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}Eventos{% endblock %}
+{% block acao_cabecalho %}<a class="botao" href="{% url 'evento_novo' %}">Novo evento</a>{% endblock %}
+
+{% block conteudo %}
+<section class="cartao">
+  <div class="barra-filtros">
+    <form method="get">
+      <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Buscar evento" aria-label="Buscar evento">
+      <label class="filtro-caixa">
+        <input type="checkbox" name="todos" value="1"{% if request.GET.todos == "1" %} checked{% endif %}>
+        Incluir eventos passados
+      </label>
+      <button type="submit" class="botao botao-claro">Filtrar</button>
+    </form>
+  </div>
+
+  <div class="tabela-rolagem">
+    <table>
+      <thead>
+        <tr><th>Data</th><th>Horário</th><th>Evento</th><th>Local</th><th>Presença prevista</th><th>Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for evento in eventos %}
+        <tr>
+          <td>{{ evento.data|date:"d/m/Y" }}</td>
+          <td>{{ evento.horario|time:"H:i"|default:"—" }}</td>
+          <td><strong>{{ evento.nome }}</strong></td>
+          <td>{{ evento.local|default:"—" }}</td>
+          <td>{{ evento.presenca_prevista|default:"—" }}</td>
+          <td class="acoes">
+            <a class="link-acao" href="{% url 'evento_editar' evento.pk %}">Editar</a>
+            <a class="link-acao link-perigo" href="{% url 'evento_excluir' evento.pk %}">Excluir</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="vazio">Nenhum evento encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "cadastro/_paginacao.html" %}
+</section>
+{% endblock %}

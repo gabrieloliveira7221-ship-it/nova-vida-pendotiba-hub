@@ -1,6 +1,6 @@
 """
-Painel administrativo: é a "área reservada" do sistema no Django.
-Cobre os requisitos de cadastrar, editar, excluir, buscar e filtrar.
+Administração do Django (/admin/): criação de usuários da equipe e
+manutenção das tabelas de apoio (bairros e tipos de atendimento).
 """
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin

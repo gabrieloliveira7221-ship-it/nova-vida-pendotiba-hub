@@ -1,0 +1,22 @@
+{% extends "cadastro/gestao.html" %}
+
+{% block titulo %}{% if object %}Editar atendimento{% else %}Novo atendimento{% endif %} — Nova Vida Pendotiba{% endblock %}
+{% block cabecalho %}{% if object %}Editar atendimento{% else %}Novo atendimento{% endif %}{% endblock %}
+
+{% block conteudo %}
+<form method="post" class="cartao cartao-corpo formulario">
+  {% csrf_token %}
+  <div class="formulario-colunas">
+    {% include "cadastro/_campo.html" with campo=form.pessoa %}
+    {% include "cadastro/_campo.html" with campo=form.tipo %}
+    {% include "cadastro/_campo.html" with campo=form.data %}
+    {% include "cadastro/_campo.html" with campo=form.status %}
+  </div>
+  {% include "cadastro/_campo.html" with campo=form.descricao %}
+  <p class="texto-suave">A pessoa não está na lista? <a href="{% url 'pessoa_nova' %}">Cadastre-a primeiro</a>.</p>
+  <div class="botoes-form">
+    <button type="submit" class="botao">Salvar</button>
+    <a class="botao botao-claro" href="{% url 'atendimentos' %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}
