@@ -62,7 +62,8 @@ function Page() {
   const hoje = hojeISO();
   const filtrados = (eventos.data ?? []).filter(
     (e) =>
-      e.nome.toLowerCase().includes(busca.trim().toLowerCase()) && (!somenteProximos || e.data >= hoje),
+      e.nome.toLowerCase().includes(busca.trim().toLowerCase()) &&
+      (!somenteProximos || e.data >= hoje),
   );
 
   async function atualizarListas() {
@@ -150,8 +151,16 @@ function Page() {
           </BotaoPrimario>
         </div>
 
-        {eventos.error && <div className="p-5"><Aviso>{mensagemDeErro(eventos.error)}</Aviso></div>}
-        {erroLista && <div className="p-5"><Aviso>{erroLista}</Aviso></div>}
+        {eventos.error && (
+          <div className="p-5">
+            <Aviso>{mensagemDeErro(eventos.error)}</Aviso>
+          </div>
+        )}
+        {erroLista && (
+          <div className="p-5">
+            <Aviso>{erroLista}</Aviso>
+          </div>
+        )}
 
         <Tabela
           colunas={["Data", "Horário", "Evento", "Local", "Presença prevista", "Ações"]}
@@ -167,7 +176,9 @@ function Page() {
               <td className="px-5 py-4 text-sm">{e.presenca_prevista ?? "—"}</td>
               <td className="flex gap-3 px-5 py-4">
                 <BotaoLink onClick={() => abrirCadastro(e)}>Editar</BotaoLink>
-                <BotaoLink perigo onClick={() => void excluir(e)}>Excluir</BotaoLink>
+                <BotaoLink perigo onClick={() => void excluir(e)}>
+                  Excluir
+                </BotaoLink>
               </td>
             </tr>
           ))}
@@ -188,16 +199,36 @@ function Page() {
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <Campo rotulo="Nome do evento *">
-            <input name="nome" defaultValue={editando?.nome ?? ""} placeholder="Ex: Culto de Jovens" className={campoClasse} />
+            <input
+              name="nome"
+              defaultValue={editando?.nome ?? ""}
+              placeholder="Ex: Culto de Jovens"
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Data *">
-            <input type="date" name="data" defaultValue={editando?.data ?? ""} className={campoClasse} />
+            <input
+              type="date"
+              name="data"
+              defaultValue={editando?.data ?? ""}
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Horário">
-            <input type="time" name="horario" defaultValue={editando?.horario?.slice(0, 5) ?? ""} className={campoClasse} />
+            <input
+              type="time"
+              name="horario"
+              defaultValue={editando?.horario?.slice(0, 5) ?? ""}
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Local">
-            <input name="local" defaultValue={editando?.local ?? ""} placeholder="Ex: Templo principal" className={campoClasse} />
+            <input
+              name="local"
+              defaultValue={editando?.local ?? ""}
+              placeholder="Ex: Templo principal"
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Presença prevista">
             <input

@@ -24,7 +24,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void supabase.auth.getUser().then(({ data }) => {
       if (active && !transitioned) setUser(data.user);
     });
-    return () => { active = false; data.subscription.unsubscribe(); };
+    return () => {
+      active = false;
+      data.subscription.unsubscribe();
+    };
   }, [router, queryClient]);
   return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
 }

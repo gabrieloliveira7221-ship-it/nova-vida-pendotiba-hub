@@ -1,6 +1,75 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, Clock, MapPin } from "lucide-react";
 import { InfoPage } from "@/components/info-page";
-const data=[{date:"04 OUT",title:"Culto de comunhão",time:"10h",kind:"Celebração"},{date:"11 OUT",title:"Domingo em família",time:"10h",kind:"Famílias"},{date:"18 OUT",title:"Conexão Nova Geração",time:"18h",kind:"Juventude"},{date:"25 OUT",title:"Encontro de oração",time:"19h30",kind:"Oração"}];
-export const Route=createFileRoute("/agenda")({head:()=>({meta:[{title:"Agenda — Nova Vida Pendotiba"},{name:"description",content:"Veja a agenda demonstrativa de cultos e eventos da Nova Vida Pendotiba."},{property:"og:title",content:"Agenda da Nova Vida Pendotiba"},{property:"og:description",content:"Cultos, encontros e atividades da comunidade."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Page});
-function Page(){return <InfoPage eyebrow="Agenda" title="Há um lugar esperando por você." text="Confira os próximos encontros. Datas e horários abaixo são demonstrativos e aguardam confirmação da igreja."><div className="mb-8 rounded-md border border-warning bg-card p-4 text-sm"><b>Atenção:</b> programação fictícia para apresentação do protótipo.</div><div className="grid gap-4">{data.map(x=><article key={x.title} className="grid gap-5 rounded-md border bg-card p-6 sm:grid-cols-[110px_1fr_auto] sm:items-center"><div className="font-display text-3xl text-primary">{x.date}</div><div><p className="text-xs font-extrabold uppercase text-muted-foreground">{x.kind}</p><h2 className="mt-1 text-xl font-extrabold">{x.title}</h2><div className="mt-3 flex flex-wrap gap-4 text-sm text-muted-foreground"><span className="flex gap-2"><Clock size={17}/>{x.time}</span><span className="flex gap-2"><MapPin size={17}/>Local a confirmar</span></div></div><CalendarDays className="text-secondary" size={28}/></article>)}</div></InfoPage>}
+import { diaEMes, listarEventosPublicos } from "@/lib/agenda.functions";
+
+export const Route = createFileRoute("/agenda")({
+  head: () => ({
+    meta: [
+      { title: "Agenda — Nova Vida Pendotiba" },
+      {
+        name: "description",
+        content: "Veja a agenda de cultos e eventos da Nova Vida Pendotiba.",
+      },
+      { property: "og:title", content: "Agenda da Nova Vida Pendotiba" },
+      { property: "og:description", content: "Cultos, encontros e atividades da comunidade." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  loader: () => listarEventosPublicos(),
+  component: Page,
+});
+
+function Page() {
+  const eventos = Route.useLoaderData();
+
+  return (
+    <InfoPage
+      eyebrow="Agenda"
+      title="Há um lugar esperando por você."
+      text="Confira os próximos encontros da nossa comunidade."
+    >
+      {eventos.length === 0 ? (
+        <p className="rounded-md border bg-card p-6 text-sm text-muted-foreground">
+          Nenhum evento agendado no momento. Volte em breve!
+        </p>
+      ) : (
+        <div className="grid gap-4">
+          {eventos.map((evento) => {
+            const { dia, mes } = diaEMes(evento.data);
+            return (
+              <article
+                key={evento.id_evento}
+                className="grid gap-5 rounded-md border bg-card p-6 sm:grid-cols-[110px_1fr_auto] sm:items-center"
+              >
+                <div className="font-display text-3xl text-primary">
+                  {dia} {mes}
+                </div>
+                <div>
+                  <h2 className="text-xl font-extrabold">{evento.nome}</h2>
+                  {evento.descricao && (
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      {evento.descricao}
+                    </p>
+                  )}
+                  <div className="mt-3 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                    <span className="flex gap-2">
+                      <Clock size={17} />
+                      {evento.horario ? evento.horario.slice(0, 5) : "Horário a definir"}
+                    </span>
+                    <span className="flex gap-2">
+                      <MapPin size={17} />
+                      {evento.local ?? "Local a definir"}
+                    </span>
+                  </div>
+                </div>
+                <CalendarDays className="text-secondary" size={28} />
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </InfoPage>
+  );
+}

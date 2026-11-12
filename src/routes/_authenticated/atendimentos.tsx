@@ -126,8 +126,13 @@ function Page() {
         descricao: textoOuNulo(form.get("descricao")),
       };
       const { error } = editando
-        ? await supabase.from("atendimento").update(dados).eq("id_atendimento", editando.id_atendimento)
-        : await supabase.from("atendimento").insert({ ...dados, id_usuario: await garantirUsuario() });
+        ? await supabase
+            .from("atendimento")
+            .update(dados)
+            .eq("id_atendimento", editando.id_atendimento)
+        : await supabase
+            .from("atendimento")
+            .insert({ ...dados, id_usuario: await garantirUsuario() });
       if (error) throw error;
       setJanelaAberta(false);
       await atualizarListas();
@@ -162,7 +167,8 @@ function Page() {
   return (
     <AppShell title="Atendimentos sociais">
       <p className="mb-6 text-sm text-muted-foreground">
-        Registre quem foi atendido, como e quando. Registros sensíveis: acesso somente para pessoas autorizadas.
+        Registre quem foi atendido, como e quando. Registros sensíveis: acesso somente para pessoas
+        autorizadas.
       </p>
 
       <section className="rounded-md border bg-card">
@@ -177,7 +183,12 @@ function Page() {
                 placeholder="Buscar por pessoa"
               />
             </div>
-            <select value={tipoFiltro} onChange={(e) => setTipoFiltro(e.target.value)} className={campoClasse} aria-label="Filtrar por tipo">
+            <select
+              value={tipoFiltro}
+              onChange={(e) => setTipoFiltro(e.target.value)}
+              className={campoClasse}
+              aria-label="Filtrar por tipo"
+            >
               <option value="">Todos os tipos</option>
               {tipos.data?.map((t) => (
                 <option key={t.id_tipo} value={t.id_tipo}>
@@ -185,7 +196,12 @@ function Page() {
                 </option>
               ))}
             </select>
-            <select value={statusFiltro} onChange={(e) => setStatusFiltro(e.target.value)} className={campoClasse} aria-label="Filtrar por situação">
+            <select
+              value={statusFiltro}
+              onChange={(e) => setStatusFiltro(e.target.value)}
+              className={campoClasse}
+              aria-label="Filtrar por situação"
+            >
               <option value="">Todas as situações</option>
               {STATUS.map((s) => (
                 <option key={s.valor} value={s.valor}>
@@ -193,7 +209,13 @@ function Page() {
                 </option>
               ))}
             </select>
-            <input type="date" value={dataFiltro} onChange={(e) => setDataFiltro(e.target.value)} className={campoClasse} aria-label="Filtrar por data" />
+            <input
+              type="date"
+              value={dataFiltro}
+              onChange={(e) => setDataFiltro(e.target.value)}
+              className={campoClasse}
+              aria-label="Filtrar por data"
+            />
           </div>
           <BotaoPrimario onClick={() => abrirCadastro(null)}>
             <Plus size={16} className="mr-2" />
@@ -201,8 +223,16 @@ function Page() {
           </BotaoPrimario>
         </div>
 
-        {atendimentos.error && <div className="p-5"><Aviso>{mensagemDeErro(atendimentos.error)}</Aviso></div>}
-        {erroLista && <div className="p-5"><Aviso>{erroLista}</Aviso></div>}
+        {atendimentos.error && (
+          <div className="p-5">
+            <Aviso>{mensagemDeErro(atendimentos.error)}</Aviso>
+          </div>
+        )}
+        {erroLista && (
+          <div className="p-5">
+            <Aviso>{erroLista}</Aviso>
+          </div>
+        )}
 
         <Tabela
           colunas={["Pessoa", "Tipo", "Data", "Responsável", "Situação", "Ações"]}
@@ -215,16 +245,22 @@ function Page() {
               <td className="px-5 py-4 text-sm">{a.tipo_atendimento?.nome ?? "—"}</td>
               <td className="px-5 py-4 text-sm">{formatarData(a.data)}</td>
               <td className="px-5 py-4 text-sm">{a.usuario?.nome ?? "—"}</td>
-              <td className="px-5 py-4 text-sm"><StatusAtendimento status={a.status} /></td>
+              <td className="px-5 py-4 text-sm">
+                <StatusAtendimento status={a.status} />
+              </td>
               <td className="flex flex-wrap gap-3 px-5 py-4">
                 {a.status === "agendado" && (
                   <>
-                    <BotaoLink onClick={() => void mudarStatus(a, "realizado")}>Realizado</BotaoLink>
+                    <BotaoLink onClick={() => void mudarStatus(a, "realizado")}>
+                      Realizado
+                    </BotaoLink>
                     <BotaoLink onClick={() => void mudarStatus(a, "cancelado")}>Cancelar</BotaoLink>
                   </>
                 )}
                 <BotaoLink onClick={() => abrirCadastro(a)}>Editar</BotaoLink>
-                <BotaoLink perigo onClick={() => void excluir(a)}>Excluir</BotaoLink>
+                <BotaoLink perigo onClick={() => void excluir(a)}>
+                  Excluir
+                </BotaoLink>
               </td>
             </tr>
           ))}
@@ -239,14 +275,20 @@ function Page() {
         aberta={janelaAberta}
         aoMudar={setJanelaAberta}
         titulo={editando ? "Editar atendimento" : "Novo atendimento"}
-        {...(pessoas.data?.length === 0 ? { descricao: "Cadastre uma pessoa antes de registrar um atendimento." } : {})}
+        {...(pessoas.data?.length === 0
+          ? { descricao: "Cadastre uma pessoa antes de registrar um atendimento." }
+          : {})}
         aoEnviar={(e) => void salvar(e)}
         salvando={salvando}
         erro={erroForm}
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <Campo rotulo="Pessoa *">
-            <select name="id_pessoa" defaultValue={editando ? String(editando.id_pessoa) : ""} className={campoClasse}>
+            <select
+              name="id_pessoa"
+              defaultValue={editando ? String(editando.id_pessoa) : ""}
+              className={campoClasse}
+            >
               <option value="">Selecione a pessoa</option>
               {pessoas.data?.map((p) => (
                 <option key={p.id_pessoa} value={p.id_pessoa}>
@@ -256,7 +298,11 @@ function Page() {
             </select>
           </Campo>
           <Campo rotulo="Tipo de atendimento *">
-            <select name="id_tipo" defaultValue={editando ? String(editando.id_tipo) : ""} className={campoClasse}>
+            <select
+              name="id_tipo"
+              defaultValue={editando ? String(editando.id_tipo) : ""}
+              className={campoClasse}
+            >
               <option value="">Selecione o tipo</option>
               {tipos.data?.map((t) => (
                 <option key={t.id_tipo} value={t.id_tipo}>
@@ -266,10 +312,19 @@ function Page() {
             </select>
           </Campo>
           <Campo rotulo="Data *">
-            <input type="date" name="data" defaultValue={editando?.data ?? hojeISO()} className={campoClasse} />
+            <input
+              type="date"
+              name="data"
+              defaultValue={editando?.data ?? hojeISO()}
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Situação">
-            <select name="status" defaultValue={editando?.status ?? "agendado"} className={campoClasse}>
+            <select
+              name="status"
+              defaultValue={editando?.status ?? "agendado"}
+              className={campoClasse}
+            >
               {STATUS.map((s) => (
                 <option key={s.valor} value={s.valor}>
                   {s.rotulo}

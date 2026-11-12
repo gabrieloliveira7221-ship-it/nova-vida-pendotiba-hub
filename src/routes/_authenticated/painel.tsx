@@ -35,7 +35,9 @@ function Page() {
             .select("*", { count: "exact", head: true })
             .gte("data", inicioDoMesISO()),
         ),
-        contar(supabase.from("evento").select("*", { count: "exact", head: true }).gte("data", hoje)),
+        contar(
+          supabase.from("evento").select("*", { count: "exact", head: true }).gte("data", hoje),
+        ),
         supabase
           .from("atendimento")
           .select("id_atendimento, data, status, pessoa(nome_completo), tipo_atendimento(nome)")
@@ -52,7 +54,13 @@ function Page() {
       ]);
       if (ultimos.error) throw ultimos.error;
       if (proximo.error) throw proximo.error;
-      return { pessoas, atendimentosNoMes, proximosEventos, ultimos: ultimos.data, proximo: proximo.data };
+      return {
+        pessoas,
+        atendimentosNoMes,
+        proximosEventos,
+        ultimos: ultimos.data,
+        proximo: proximo.data,
+      };
     },
   });
 
@@ -64,7 +72,11 @@ function Page() {
 
   return (
     <AppShell title="Visão geral">
-      {painel.error && <div className="mb-6"><Aviso>{mensagemDeErro(painel.error)}</Aviso></div>}
+      {painel.error && (
+        <div className="mb-6">
+          <Aviso>{mensagemDeErro(painel.error)}</Aviso>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-3">
         {cartoes.map(([Icone, rotulo, valor]) => (
@@ -86,7 +98,9 @@ function Page() {
           </div>
           <div className="mt-5 divide-y">
             {painel.data?.ultimos.length === 0 && (
-              <p className="py-4 text-sm text-muted-foreground">Nenhum atendimento registrado ainda.</p>
+              <p className="py-4 text-sm text-muted-foreground">
+                Nenhum atendimento registrado ainda.
+              </p>
             )}
             {painel.data?.ultimos.map((a) => (
               <div key={a.id_atendimento} className="flex items-center justify-between gap-3 py-4">
@@ -108,10 +122,13 @@ function Page() {
             <>
               <h2 className="mt-4 text-2xl font-extrabold">{painel.data.proximo.nome}</h2>
               <p className="mt-2 text-sm text-primary-foreground/65">
-                {formatarData(painel.data.proximo.data)} · {formatarHora(painel.data.proximo.horario)}
+                {formatarData(painel.data.proximo.data)} ·{" "}
+                {formatarHora(painel.data.proximo.horario)}
               </p>
               {painel.data.proximo.local && (
-                <p className="mt-1 text-sm text-primary-foreground/65">{painel.data.proximo.local}</p>
+                <p className="mt-1 text-sm text-primary-foreground/65">
+                  {painel.data.proximo.local}
+                </p>
               )}
             </>
           ) : (

@@ -1,5 +1,4 @@
 import type { FormEvent, ReactNode } from "react";
-import { Status } from "./management-table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 
 /** Classes padrão dos campos de formulário e filtros da área de gestão. */
@@ -141,13 +140,19 @@ export function Tabela({
         <tbody className="divide-y">
           {carregando ? (
             <tr>
-              <td colSpan={colunas.length} className="px-5 py-8 text-center text-sm text-muted-foreground">
+              <td
+                colSpan={colunas.length}
+                className="px-5 py-8 text-center text-sm text-muted-foreground"
+              >
                 Carregando…
               </td>
             </tr>
           ) : vazio ? (
             <tr>
-              <td colSpan={colunas.length} className="px-5 py-8 text-center text-sm text-muted-foreground">
+              <td
+                colSpan={colunas.length}
+                className="px-5 py-8 text-center text-sm text-muted-foreground"
+              >
                 Nenhum registro encontrado.
               </td>
             </tr>
@@ -165,4 +170,22 @@ export function StatusAtendimento({ status }: { status: string }) {
   if (status === "realizado") return <Status tone="success">Realizado</Status>;
   if (status === "cancelado") return <Status tone="warning">Cancelado</Status>;
   return <Status>Agendado</Status>;
+}
+
+/** Etiqueta colorida usada nas listas da área de gestão. */
+export function Status({
+  children,
+  tone = "primary",
+}: {
+  children: ReactNode;
+  tone?: "primary" | "success" | "warning";
+}) {
+  const styles = {
+    primary: "bg-surface text-primary",
+    success: "bg-muted text-success",
+    warning: "bg-accent text-accent-foreground",
+  };
+  return (
+    <span className={`rounded-sm px-2 py-1 text-xs font-bold ${styles[tone]}`}>{children}</span>
+  );
 }

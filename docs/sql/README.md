@@ -1,24 +1,31 @@
-# Banco Nova Vida — Lovable Cloud
+# Banco de dados — Nova Vida Pendotiba
 
-O arquivo `Banco_Nova_Vida.original.sql` preserva exatamente o material enviado.
-O banco Cloud contém as seis tabelas e todas as colunas desse modelo.
+`Banco_Nova_Vida.original.sql` é o script do banco conforme o modelo lógico do trabalho:
+seis tabelas, chaves, regras de segurança (RLS) e dados iniciais.
 
-## Adaptações aprovadas
+## Ajustes na implantação
 
-- `usuario.id_usuario` continua UUID e chave primária, sem a referência direta a `auth.users` nem seu efeito de exclusão em cascata. As cinco outras chaves estrangeiras permanecem intactas.
-- Foram acrescentadas permissões explícitas de leitura e escrita para `authenticated` e permissões completas para `service_role`, em cada tabela. Não foi concedido acesso a `anon`.
-- Todas as sete policies originais foram preservadas; RLS está ativo nas seis tabelas.
-- `cargo` é informação descritiva, não uma fonte de autorização: o próprio usuário pode alterá-lo conforme a policy original.
+- `usuario.id_usuario` é um UUID igual ao identificador da conta de login. A ligação com a conta
+  é feita por um gatilho que cria a linha em `usuario` no cadastro (migração
+  `0001_criar_usuario_ao_cadastrar_conta.sql`), em vez de uma chave estrangeira direta para a
+  tabela interna de autenticação.
+- Cada tabela recebeu permissões explícitas de leitura e escrita para usuários autenticados.
+  Visitantes sem login não têm acesso às tabelas.
+- As sete regras de acesso (policies) do script foram mantidas, com RLS ativo nas seis tabelas.
+- `cargo` é apenas descritivo e não dá permissões extras.
 
 ## Dados iniciais
 
-Foram inseridos os seis bairros e cinco tipos de atendimento exatamente como enviados, separadamente da criação do esquema, conforme o fluxo do Cloud. Nenhuma pessoa, conta, evento ou atendimento foi inventado.
+Seis bairros (Pendotiba, Largo da Batalha, Maceió, Badu, Sapê e Matapaca) e cinco tipos de
+atendimento (Cesta básica, Aconselhamento, Visita, Oração e Encaminhamento).
 
-## Limites desta entrega
+## Observação de segurança
 
-As páginas de gestão continuam demonstrativas; não foram conectadas ao banco nem foi implementado acesso real nesta solicitação.
-As policies fornecidas permitem a qualquer conta autenticada ler e alterar bairros, tipos, pessoas, atendimentos e eventos, e ler todos os perfis. Antes de cadastrar informações reais ou sensíveis, deve-se revisar esse acesso com a igreja.
+Hoje qualquer usuário logado pode ler e alterar pessoas, atendimentos e eventos. Antes de usar
+com dados reais, a igreja deve definir quem pode criar contas e, se necessário, separar
+permissões por cargo.
 
 ## Verificação
 
-`tests/database/modelo.sql` contém verificações de leitura para as principais regras do modelo e pode ser executado contra o banco Cloud. Cada resultado deve ser verdadeiro.
+`tests/database/modelo.sql` contém consultas que conferem as regras do modelo. Executadas no
+banco, todas devem retornar verdadeiro.

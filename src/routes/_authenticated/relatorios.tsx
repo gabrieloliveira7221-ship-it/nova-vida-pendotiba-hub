@@ -15,7 +15,20 @@ export const Route = createFileRoute("/_authenticated/relatorios")({
   component: Page,
 });
 
-const NOMES_MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+const NOMES_MESES = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
+];
 
 /** Últimos 6 meses no formato AAAA-MM, do mais antigo ao atual. */
 function ultimosSeisMeses(): string[] {
@@ -54,7 +67,11 @@ function Page() {
 
   return (
     <AppShell title="Relatórios">
-      {relatorio.error && <div className="mb-6"><Aviso>{mensagemDeErro(relatorio.error)}</Aviso></div>}
+      {relatorio.error && (
+        <div className="mb-6">
+          <Aviso>{mensagemDeErro(relatorio.error)}</Aviso>
+        </div>
+      )}
 
       <div className="grid gap-6 xl:grid-cols-2">
         <section className="rounded-md border bg-card p-6">
@@ -62,7 +79,10 @@ function Page() {
           <h2 className="mt-2 text-xl font-extrabold">Atendimentos por mês</h2>
           <div className="mt-8 flex h-56 items-end gap-4 border-b border-l px-4">
             {porMes.map((valor, i) => (
-              <div key={meses[i]} className="flex h-full flex-1 flex-col items-center justify-end gap-1">
+              <div
+                key={meses[i]}
+                className="flex h-full flex-1 flex-col items-center justify-end gap-1"
+              >
                 <span className="text-xs font-bold">{valor}</span>
                 <div
                   className="w-full rounded-t-sm bg-primary"
@@ -82,7 +102,11 @@ function Page() {
         <section className="rounded-md border bg-card p-6">
           <p className="text-xs font-extrabold uppercase text-primary">Distribuição</p>
           <h2 className="mt-2 text-xl font-extrabold">Atendimentos por tipo</h2>
-          <Barras itens={porTipo} total={total} vazio={!relatorio.isLoading && atendimentos.length === 0} />
+          <Barras
+            itens={porTipo}
+            total={total}
+            vazio={!relatorio.isLoading && atendimentos.length === 0}
+          />
 
           <h2 className="mt-10 text-xl font-extrabold">Atendimentos por situação</h2>
           <Barras
@@ -96,8 +120,19 @@ function Page() {
   );
 }
 
-function Barras({ itens, total, vazio }: { itens: [string, number][]; total: number; vazio: boolean }) {
-  if (vazio) return <p className="mt-6 text-sm text-muted-foreground">Nenhum atendimento registrado ainda.</p>;
+function Barras({
+  itens,
+  total,
+  vazio,
+}: {
+  itens: [string, number][];
+  total: number;
+  vazio: boolean;
+}) {
+  if (vazio)
+    return (
+      <p className="mt-6 text-sm text-muted-foreground">Nenhum atendimento registrado ainda.</p>
+    );
   return (
     <div className="mt-6 grid gap-5">
       {itens.map(([nome, valor]) => (
@@ -107,7 +142,10 @@ function Barras({ itens, total, vazio }: { itens: [string, number][]; total: num
             <span>{valor}</span>
           </div>
           <div className="mt-2 h-3 rounded-sm bg-muted">
-            <div className="h-3 rounded-sm bg-secondary" style={{ width: `${(valor / total) * 100}%` }} />
+            <div
+              className="h-3 rounded-sm bg-secondary"
+              style={{ width: `${(valor / total) * 100}%` }}
+            />
           </div>
         </div>
       ))}

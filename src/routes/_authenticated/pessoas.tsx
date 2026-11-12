@@ -154,8 +154,16 @@ function Page() {
           </BotaoPrimario>
         </div>
 
-        {pessoas.error && <div className="p-5"><Aviso>{mensagemDeErro(pessoas.error)}</Aviso></div>}
-        {erroLista && <div className="p-5"><Aviso>{erroLista}</Aviso></div>}
+        {pessoas.error && (
+          <div className="p-5">
+            <Aviso>{mensagemDeErro(pessoas.error)}</Aviso>
+          </div>
+        )}
+        {erroLista && (
+          <div className="p-5">
+            <Aviso>{erroLista}</Aviso>
+          </div>
+        )}
 
         <Tabela
           colunas={["Nome", "Telefone", "Bairro", "Cadastro", "Ações"]}
@@ -171,7 +179,9 @@ function Page() {
               <td className="flex gap-3 px-5 py-4">
                 <BotaoLink onClick={() => setHistoricoDe(p)}>Histórico</BotaoLink>
                 <BotaoLink onClick={() => abrirCadastro(p)}>Editar</BotaoLink>
-                <BotaoLink perigo onClick={() => void excluir(p)}>Excluir</BotaoLink>
+                <BotaoLink perigo onClick={() => void excluir(p)}>
+                  Excluir
+                </BotaoLink>
               </td>
             </tr>
           ))}
@@ -192,16 +202,34 @@ function Page() {
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <Campo rotulo="Nome completo *">
-            <input name="nome_completo" defaultValue={editando?.nome_completo ?? ""} className={campoClasse} />
+            <input
+              name="nome_completo"
+              defaultValue={editando?.nome_completo ?? ""}
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Data de nascimento">
-            <input type="date" name="data_nascimento" defaultValue={editando?.data_nascimento ?? ""} className={campoClasse} />
+            <input
+              type="date"
+              name="data_nascimento"
+              defaultValue={editando?.data_nascimento ?? ""}
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Telefone">
-            <input name="telefone" defaultValue={editando?.telefone ?? ""} placeholder="(21) 99999-0000" className={campoClasse} />
+            <input
+              name="telefone"
+              defaultValue={editando?.telefone ?? ""}
+              placeholder="(21) 99999-0000"
+              className={campoClasse}
+            />
           </Campo>
           <Campo rotulo="Bairro *">
-            <select name="id_bairro" defaultValue={editando ? String(editando.id_bairro) : ""} className={campoClasse}>
+            <select
+              name="id_bairro"
+              defaultValue={editando ? String(editando.id_bairro) : ""}
+              className={campoClasse}
+            >
               <option value="">Selecione</option>
               {bairros.data?.map((b) => (
                 <option key={b.id_bairro} value={b.id_bairro}>
@@ -215,7 +243,11 @@ function Page() {
           <input name="endereco" defaultValue={editando?.endereco ?? ""} className={campoClasse} />
         </Campo>
         <Campo rotulo="Observações">
-          <textarea name="observacoes" defaultValue={editando?.observacoes ?? ""} className={areaTextoClasse} />
+          <textarea
+            name="observacoes"
+            defaultValue={editando?.observacoes ?? ""}
+            className={areaTextoClasse}
+          />
         </Campo>
       </JanelaFormulario>
 
@@ -249,7 +281,9 @@ function Historico({ pessoa, aoFechar }: { pessoa: Pessoa | null; aoFechar: () =
         {historico.isLoading && <p className="text-sm text-muted-foreground">Carregando…</p>}
         {historico.error && <Aviso>{mensagemDeErro(historico.error)}</Aviso>}
         {historico.data?.length === 0 && (
-          <p className="text-sm text-muted-foreground">Nenhum atendimento registrado para esta pessoa.</p>
+          <p className="text-sm text-muted-foreground">
+            Nenhum atendimento registrado para esta pessoa.
+          </p>
         )}
         <div className="divide-y">
           {historico.data?.map((a) => (
@@ -271,4 +305,3 @@ function Historico({ pessoa, aoFechar }: { pessoa: Pessoa | null; aoFechar: () =
     </Dialog>
   );
 }
-

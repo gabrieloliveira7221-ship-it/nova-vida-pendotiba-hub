@@ -1,25 +1,71 @@
-# Nova Vida Pendotiba Hub
+# nova vida pendotiba
 
-https://eklesia.com.br/gestao/?gad_source=1&gad_campaignid=20765045431&gbraid=0AAAAADfuEbIyqSH1dxc2aXV68HpVMDKRr&gclid=EAIaIQobChMI_OTPxsuWlwMVnExIAB3AuxKUEAAYASAAEgKSHPD_BwE --> cria um site para minha igreja . nome: nova vida pendotiba. colocar e-mail:invpendotiba@gmail.com, e colocar CNPJ: 09.615.201/0001-78. faz com pytron django + Mysql + prototipo ou figma , deixa um site igual a do link , pois tem que ser um site basic , pois nos somos estudantes de si e estamos no 3p .
-This project was built with [Lovable](https://lovable.dev).
+sistema web da **igreja nova vida pendotiba** (niterói – rj), feito pro projeto de extensão do
+curso de sistemas de informação da unilasalle-rj. sim, a gente fez um sistema pra igreja e tá
+rodando de verdade, sem caô
 
-**Live app**: https://nova-vida-pendotiba-hub.lovable.app
+o rolê era o seguinte: a igreja anotava pessoas, atendimentos sociais e eventos tudo na mão, e
+ninguém sabia quem já tinha sido atendido. aí a gente digitalizou tudo e agora fica o histórico
+de cada pessoa salvinho no banco
 
-## Build with Lovable
+**bora ver:** https://nova-vida-pendotiba-hub.lovable.app
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/fa284f25-3d31-4fd6-90a4-e1df04dbc59e).
+## o que dá pra fazer
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+**site aberto (geral vê)**
+- páginas início, conheça-nos, agenda, ministérios e contato
+- agenda puxando os próximos eventos direto do sistema, nada de evento fake
+- formulário de contato que já abre o e-mail da igreja com a mensagem prontinha
 
-## Development
+**área reservada (só entra quem tem login, nada de xereta)**
+- login e cadastro com e-mail e senha
+- **pessoas:** cadastra, edita, apaga, busca pelo nome e filtra por bairro
+- **histórico:** todos os atendimentos de cada pessoa — quem foi atendido, como, quando e por quem
+- **atendimentos:** registra, edita, marca como realizado ou cancelado e apaga; filtra por pessoa,
+  tipo, situação e data
+- **eventos:** cria, edita, consulta e apaga
+- **visão geral e relatórios:** números e gráficos saindo direto do banco, tudo real
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## as tecnologias (a stack, né)
+
+| camada         | o que a gente usou                                      |
+|----------------|---------------------------------------------------------|
+| interface      | react, typescript, tanstack start, tailwind css         |
+| banco de dados | postgresql, com controle de acesso por linha (rls)      |
+| back-end       | python 3 + django (pasta `backend/`), com docker        |
+
+## onde fica cada coisa
+
+```
+src/
+  routes/                 as páginas do site
+    _authenticated/       área reservada (painel, pessoas, atendimentos, eventos, relatórios)
+  components/             componentes visuais que todo mundo reusa
+  lib/                    funçõezinhas de apoio (datas, usuário logado, agenda pública)
+backend/                  back-end django (models, área administrativa, api)
+docs/                     arquitetura e script sql do banco
+drizzle/migrations/       migrações que já rodaram no banco
+```
+
+## o banco
+
+são seis tabelas: `usuario`, `bairro`, `pessoa`, `tipo_atendimento`, `atendimento` e `evento`.
+o script completinho tá em [`docs/sql/banco_nova_vida.original.sql`](docs/sql/Banco_Nova_Vida.original.sql)
+e a arquitetura explicada tá em [`docs/arquitetura.md`](docs/ARQUITETURA.md)
+
+## como rodar na tua máquina
+
+**site**
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+**back-end django:** dá uma olhada no [`backend/readme.md`](backend/README.md) que tá tudo lá
+
+## a equipe que fez acontecer
+
+- joão gabriel de almeida corrêa
+- miguel arcanjo da silva chaves
+- gabriel oliveira lira

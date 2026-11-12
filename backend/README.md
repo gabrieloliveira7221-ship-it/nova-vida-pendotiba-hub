@@ -1,6 +1,6 @@
 # Back-end Django — Nova Vida Pendotiba
 
-Parte em **Python + Django** do sistema. O site (React/TypeScript, feito no Lovable)
+Parte em **Python + Django** do sistema. O site (React/TypeScript)
 fica na raiz do repositório; esta pasta `backend/` é o back-end Django com o mesmo
 modelo de dados do trabalho (modelo lógico):
 

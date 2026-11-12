@@ -57,7 +57,7 @@ export async function garantirUsuario(): Promise<string> {
     const nome =
       typeof nomeInformado === "string" && nomeInformado.trim() !== ""
         ? nomeInformado.trim()
-        : (conta.email ?? "usuario").split("@")[0] ?? "usuario";
+        : ((conta.email ?? "usuario").split("@")[0] ?? "usuario");
     const { error: erroInsercao } = await supabase
       .from("usuario")
       .insert({ id_usuario: conta.id, nome, email: conta.email ?? "" });
