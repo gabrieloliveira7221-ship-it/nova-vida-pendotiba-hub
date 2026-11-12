@@ -1,6 +1,126 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, ClipboardList, TrendingUp, Users, type LucideIcon } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { CalendarDays, ClipboardList, Users, type LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-export const Route=createFileRoute("/_authenticated/painel")({head:()=>({meta:[{title:"Painel — Gestão Nova Vida"},{name:"description",content:"Visão geral demonstrativa da gestão da Nova Vida Pendotiba."},{property:"og:title",content:"Painel — Gestão Nova Vida"},{property:"og:description",content:"Indicadores de pessoas, atendimentos e eventos."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Page});
-const stats: [LucideIcon,string,string,string][]=[[Users,"Pessoas cadastradas","248","+12 no mês"],[ClipboardList,"Atendimentos","37","8 em andamento"],[CalendarDays,"Próximos eventos","4","2 nesta semana"],[TrendingUp,"Presença média","86%","+4% no mês"]];
-function Page(){return <AppShell title="Visão geral"><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{stats.map(([Icon,l,v,d])=><article key={String(l)} className="rounded-md border bg-card p-5"><div className="flex items-center justify-between"><Icon className="text-primary"/><span className="text-xs font-bold text-success">{String(d)}</span></div><p className="mt-7 text-sm text-muted-foreground">{String(l)}</p><b className="mt-1 block text-3xl">{String(v)}</b></article>)}</div><div className="mt-6 grid gap-6 xl:grid-cols-[1.4fr_.6fr]"><section className="rounded-md border bg-card p-6"><h2 className="text-lg font-extrabold">Atividade recente</h2><div className="mt-5 divide-y">{[["Novo membro cadastrado","Ana Souza · NV-2026-248","Hoje, 09:42"],["Atendimento atualizado","Família Oliveira · Em acompanhamento","Ontem, 16:10"],["Presença registrada","Culto de comunhão · 214 pessoas","Domingo, 11:30"]].map(x=><div key={x[0]} className="py-4"><p className="text-sm font-bold">{x[0]}</p><p className="mt-1 text-xs text-muted-foreground">{x[1]} · {x[2]}</p></div>)}</div></section><section className="rounded-md bg-ink p-6 text-primary-foreground"><p className="text-xs font-extrabold uppercase text-accent">Próximo evento</p><h2 className="mt-4 text-2xl font-extrabold">Domingo em família</h2><p className="mt-2 text-sm text-primary-foreground/65">11 de outubro · 10h</p><div className="mt-8 h-2 rounded-full bg-primary-foreground/15"><div className="h-2 w-3/4 rounded-full bg-secondary"/></div><p className="mt-3 text-xs">156 de 200 inscrições</p></section></div></AppShell>}
+import { Aviso, StatusAtendimento } from "@/components/gestao-ui";
+import { supabase } from "@/integrations/supabase/client";
+import { formatarData, formatarHora, hojeISO, inicioDoMesISO, mensagemDeErro } from "@/lib/gestao";
+
+export const Route = createFileRoute("/_authenticated/painel")({
+  head: () => ({
+    meta: [
+      { title: "Painel — Gestão Nova Vida" },
+      { name: "description", content: "Visão geral de pessoas, atendimentos e eventos." },
+    ],
+  }),
+  component: Page,
+});
+
+async function contar(consulta: PromiseLike<{ count: number | null; error: unknown }>) {
+  const { count, error } = await consulta;
+  if (error) throw error;
+  return count ?? 0;
+}
+
+function Page() {
+  const painel = useQuery({
+    queryKey: ["painel"],
+    queryFn: async () => {
+      const hoje = hojeISO();
+      const [pessoas, atendimentosNoMes, proximosEventos, ultimos, proximo] = await Promise.all([
+        contar(supabase.from("pessoa").select("*", { count: "exact", head: true })),
+        contar(
+          supabase
+            .from("atendimento")
+            .select("*", { count: "exact", head: true })
+            .gte("data", inicioDoMesISO()),
+        ),
+        contar(supabase.from("evento").select("*", { count: "exact", head: true }).gte("data", hoje)),
+        supabase
+          .from("atendimento")
+          .select("id_atendimento, data, status, pessoa(nome_completo), tipo_atendimento(nome)")
+          .order("data", { ascending: false })
+          .limit(5),
+        supabase
+          .from("evento")
+          .select("nome, data, horario, local")
+          .gte("data", hoje)
+          .order("data")
+          .order("horario")
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      if (ultimos.error) throw ultimos.error;
+      if (proximo.error) throw proximo.error;
+      return { pessoas, atendimentosNoMes, proximosEventos, ultimos: ultimos.data, proximo: proximo.data };
+    },
+  });
+
+  const cartoes: [LucideIcon, string, number | undefined][] = [
+    [Users, "Pessoas cadastradas", painel.data?.pessoas],
+    [ClipboardList, "Atendimentos no mês", painel.data?.atendimentosNoMes],
+    [CalendarDays, "Próximos eventos", painel.data?.proximosEventos],
+  ];
+
+  return (
+    <AppShell title="Visão geral">
+      {painel.error && <div className="mb-6"><Aviso>{mensagemDeErro(painel.error)}</Aviso></div>}
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        {cartoes.map(([Icone, rotulo, valor]) => (
+          <article key={rotulo} className="rounded-md border bg-card p-5">
+            <Icone className="text-primary" />
+            <p className="mt-7 text-sm text-muted-foreground">{rotulo}</p>
+            <b className="mt-1 block text-3xl">{valor ?? "…"}</b>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1.4fr_.6fr]">
+        <section className="rounded-md border bg-card p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-extrabold">Últimos atendimentos</h2>
+            <Link to="/atendimentos" className="text-xs font-bold text-primary hover:underline">
+              Ver todos
+            </Link>
+          </div>
+          <div className="mt-5 divide-y">
+            {painel.data?.ultimos.length === 0 && (
+              <p className="py-4 text-sm text-muted-foreground">Nenhum atendimento registrado ainda.</p>
+            )}
+            {painel.data?.ultimos.map((a) => (
+              <div key={a.id_atendimento} className="flex items-center justify-between gap-3 py-4">
+                <div>
+                  <p className="text-sm font-bold">{a.pessoa?.nome_completo ?? "—"}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {a.tipo_atendimento?.nome ?? "—"} · {formatarData(a.data)}
+                  </p>
+                </div>
+                <StatusAtendimento status={a.status} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-md bg-ink p-6 text-primary-foreground">
+          <p className="text-xs font-extrabold uppercase text-accent">Próximo evento</p>
+          {painel.data?.proximo ? (
+            <>
+              <h2 className="mt-4 text-2xl font-extrabold">{painel.data.proximo.nome}</h2>
+              <p className="mt-2 text-sm text-primary-foreground/65">
+                {formatarData(painel.data.proximo.data)} · {formatarHora(painel.data.proximo.horario)}
+              </p>
+              {painel.data.proximo.local && (
+                <p className="mt-1 text-sm text-primary-foreground/65">{painel.data.proximo.local}</p>
+              )}
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-primary-foreground/65">
+              {painel.isLoading ? "Carregando…" : "Nenhum evento agendado."}
+            </p>
+          )}
+        </section>
+      </div>
+    </AppShell>
+  );
+}
