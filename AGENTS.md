@@ -13,3 +13,4 @@
 - Keep the public church website and the demo management area as separate TanStack routes sharing one visual system, because the deliverable combines public communication and academic system prototyping.
 - Treat all current schedules, event names, attendance figures, and member records as labeled demonstration data until the church validates real information.
 - The production academic target is Django with MySQL and Docker; this repository provides the interactive frontend prototype because the hosted runtime is TanStack Start.
+- Use Lovable Cloud for this prototype's requested persistent database while retaining the separate Django/MySQL academic target, because the hosted runtime does not run Django or MySQL.
