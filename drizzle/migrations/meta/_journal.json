@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794453965780,
+      "tag": "0000_banco_nova_vida_modelo_logico",
+      "breakpoints": true
+    }
+  ]
 }

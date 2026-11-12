@@ -14,3 +14,4 @@
 - Treat all current schedules, event names, attendance figures, and member records as labeled demonstration data until the church validates real information.
 - The production academic target is Django with MySQL and Docker; this repository provides the interactive frontend prototype because the hosted runtime is TanStack Start.
 - Use Lovable Cloud for this prototype's requested persistent database while retaining the separate Django/MySQL academic target, because the hosted runtime does not run Django or MySQL.
+- Keep usuario.id_usuario as a plain UUID and treat usuario.cargo as descriptive only, because Cloud disallows this table's direct auth foreign key and editable profile fields must not confer privileges.

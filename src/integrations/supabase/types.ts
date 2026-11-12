@@ -14,7 +14,191 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      atendimento: {
+        Row: {
+          data: string
+          descricao: string | null
+          id_atendimento: number
+          id_pessoa: number
+          id_tipo: number
+          id_usuario: string
+          status: string
+        }
+        Insert: {
+          data?: string
+          descricao?: string | null
+          id_atendimento?: never
+          id_pessoa: number
+          id_tipo: number
+          id_usuario: string
+          status?: string
+        }
+        Update: {
+          data?: string
+          descricao?: string | null
+          id_atendimento?: never
+          id_pessoa?: number
+          id_tipo?: number
+          id_usuario?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atendimento_id_pessoa_fkey"
+            columns: ["id_pessoa"]
+            isOneToOne: false
+            referencedRelation: "pessoa"
+            referencedColumns: ["id_pessoa"]
+          },
+          {
+            foreignKeyName: "atendimento_id_tipo_fkey"
+            columns: ["id_tipo"]
+            isOneToOne: false
+            referencedRelation: "tipo_atendimento"
+            referencedColumns: ["id_tipo"]
+          },
+          {
+            foreignKeyName: "atendimento_id_usuario_fkey"
+            columns: ["id_usuario"]
+            isOneToOne: false
+            referencedRelation: "usuario"
+            referencedColumns: ["id_usuario"]
+          },
+        ]
+      }
+      bairro: {
+        Row: {
+          id_bairro: number
+          nome: string
+        }
+        Insert: {
+          id_bairro?: never
+          nome: string
+        }
+        Update: {
+          id_bairro?: never
+          nome?: string
+        }
+        Relationships: []
+      }
+      evento: {
+        Row: {
+          data: string
+          descricao: string | null
+          horario: string | null
+          id_evento: number
+          id_usuario: string
+          local: string | null
+          nome: string
+          presenca_prevista: number | null
+        }
+        Insert: {
+          data: string
+          descricao?: string | null
+          horario?: string | null
+          id_evento?: never
+          id_usuario: string
+          local?: string | null
+          nome: string
+          presenca_prevista?: number | null
+        }
+        Update: {
+          data?: string
+          descricao?: string | null
+          horario?: string | null
+          id_evento?: never
+          id_usuario?: string
+          local?: string | null
+          nome?: string
+          presenca_prevista?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evento_id_usuario_fkey"
+            columns: ["id_usuario"]
+            isOneToOne: false
+            referencedRelation: "usuario"
+            referencedColumns: ["id_usuario"]
+          },
+        ]
+      }
+      pessoa: {
+        Row: {
+          data_cadastro: string
+          data_nascimento: string | null
+          endereco: string | null
+          id_bairro: number
+          id_pessoa: number
+          nome_completo: string
+          observacoes: string | null
+          telefone: string | null
+        }
+        Insert: {
+          data_cadastro?: string
+          data_nascimento?: string | null
+          endereco?: string | null
+          id_bairro: number
+          id_pessoa?: never
+          nome_completo: string
+          observacoes?: string | null
+          telefone?: string | null
+        }
+        Update: {
+          data_cadastro?: string
+          data_nascimento?: string | null
+          endereco?: string | null
+          id_bairro?: number
+          id_pessoa?: never
+          nome_completo?: string
+          observacoes?: string | null
+          telefone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pessoa_id_bairro_fkey"
+            columns: ["id_bairro"]
+            isOneToOne: false
+            referencedRelation: "bairro"
+            referencedColumns: ["id_bairro"]
+          },
+        ]
+      }
+      tipo_atendimento: {
+        Row: {
+          id_tipo: number
+          nome: string
+        }
+        Insert: {
+          id_tipo?: never
+          nome: string
+        }
+        Update: {
+          id_tipo?: never
+          nome?: string
+        }
+        Relationships: []
+      }
+      usuario: {
+        Row: {
+          cargo: string | null
+          email: string
+          id_usuario: string
+          nome: string
+        }
+        Insert: {
+          cargo?: string | null
+          email: string
+          id_usuario: string
+          nome: string
+        }
+        Update: {
+          cargo?: string | null
+          email?: string
+          id_usuario?: string
+          nome?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

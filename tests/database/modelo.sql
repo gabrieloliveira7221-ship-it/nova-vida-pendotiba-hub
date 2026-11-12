@@ -1,0 +1,9 @@
+SELECT
+  (SELECT count(*) = 6 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname IN ('usuario','bairro','tipo_atendimento','pessoa','atendimento','evento') AND c.relrowsecurity) AS seis_tabelas_com_rls,
+  (SELECT count(*) = 7 FROM pg_policies WHERE schemaname = 'public' AND tablename IN ('usuario','bairro','tipo_atendimento','pessoa','atendimento','evento') AND roles = ARRAY['authenticated']::name[]) AS sete_policies_autenticadas,
+  (SELECT array_agg(nome::text ORDER BY nome) = ARRAY['Badu','Largo da Batalha','Maceió','Matapaca','Pendotiba','Sapê'] FROM public.bairro) AS seis_bairros_exatos,
+  (SELECT array_agg(nome::text ORDER BY nome) = ARRAY['Aconselhamento','Cesta básica','Encaminhamento','Oração','Visita'] FROM public.tipo_atendimento) AS cinco_tipos_exatos,
+  (SELECT count(*) = 5 FROM pg_constraint WHERE contype = 'f' AND connamespace = 'public'::regnamespace AND conrelid IN ('public.pessoa'::regclass,'public.atendimento'::regclass,'public.evento'::regclass)) AS cinco_chaves_estrangeiras,
+  (SELECT count(*) = 0 FROM pg_constraint WHERE contype = 'f' AND conrelid = 'public.usuario'::regclass) AS usuario_sem_chave_para_auth,
+  (SELECT count(*) = 0 FROM information_schema.role_table_grants WHERE table_schema = 'public' AND table_name IN ('usuario','bairro','tipo_atendimento','pessoa','atendimento','evento') AND grantee = 'anon') AS sem_permissoes_anon,
+  (SELECT count(*) = 6 AND bool_and(has_table_privilege('authenticated',c.oid,'SELECT') AND has_table_privilege('authenticated',c.oid,'INSERT') AND has_table_privilege('authenticated',c.oid,'UPDATE') AND has_table_privilege('authenticated',c.oid,'DELETE')) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('usuario','bairro','tipo_atendimento','pessoa','atendimento','evento')) AS permissoes_autenticadas;
