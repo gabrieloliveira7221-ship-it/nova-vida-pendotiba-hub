@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X, LogIn, ArrowRight, Mail } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { useAccount } from "./auth-provider";
 
 const links = [
   ["/", "Início"], ["/conheca", "Conheça-nos"], ["/agenda", "Agenda"],
@@ -15,6 +16,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
+  const { user } = useAccount();
   const [open, setOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
   return <div className="min-h-screen bg-background">
@@ -23,11 +25,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <Brand />
         <nav className="hidden items-center gap-7 lg:flex">
           {links.map(([to,label]) => <Link key={to} to={to} className={`text-xs font-extrabold uppercase transition-colors hover:text-primary ${path===to ? "text-primary" : "text-foreground"}`}>{label}</Link>)}
-          <Link to="/acesso" className="inline-flex h-11 items-center gap-2 rounded-md bg-foreground px-5 text-xs font-extrabold uppercase text-background"><LogIn size={16}/> Área do membro</Link>
+          <Link to={user ? "/painel" : "/acesso"} className="inline-flex h-11 items-center gap-2 rounded-md bg-foreground px-5 text-xs font-extrabold uppercase text-background"><LogIn size={16}/> {user ? "Meu painel" : "Área do membro"}</Link>
         </nav>
         <button aria-label="Abrir menu" onClick={()=>setOpen(!open)} className="grid size-11 place-items-center rounded-md border bg-background lg:hidden">{open?<X/>:<Menu/>}</button>
       </div>
-      {open && <nav className="border-t bg-background px-5 py-5 lg:hidden">{links.map(([to,label])=><Link key={to} to={to} onClick={()=>setOpen(false)} className="block border-b py-4 text-sm font-bold uppercase">{label}</Link>)}<Link to="/acesso" className="mt-5 flex h-12 items-center justify-center gap-2 rounded-md bg-foreground text-sm font-bold text-background"><LogIn size={17}/> Área do membro</Link></nav>}
+      {open && <nav className="border-t bg-background px-5 py-5 lg:hidden">{links.map(([to,label])=><Link key={to} to={to} onClick={()=>setOpen(false)} className="block border-b py-4 text-sm font-bold uppercase">{label}</Link>)}<Link to={user ? "/painel" : "/acesso"} className="mt-5 flex h-12 items-center justify-center gap-2 rounded-md bg-foreground text-sm font-bold text-background"><LogIn size={17}/> {user ? "Meu painel" : "Área do membro"}</Link></nav>}
     </header>
     <main>{children}</main>
     <footer className="bg-ink text-primary-foreground">

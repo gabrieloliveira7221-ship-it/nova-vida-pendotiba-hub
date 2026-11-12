@@ -15,3 +15,5 @@
 - The production academic target is Django with MySQL and Docker; this repository provides the interactive frontend prototype because the hosted runtime is TanStack Start.
 - Use Lovable Cloud for this prototype's requested persistent database while retaining the separate Django/MySQL academic target, because the hosted runtime does not run Django or MySQL.
 - Keep usuario.id_usuario as a plain UUID and treat usuario.cargo as descriptive only, because Cloud disallows this table's direct auth foreign key and editable profile fields must not confer privileges.
+- Create usuario rows atomically from an Auth signup trigger using nome and cargo metadata, because email confirmation can leave signup without a browser session able to insert a profile.
+- Keep management routes under the client-only _authenticated layout redirecting to /acesso, and use one root auth subscriber, because browser sessions are unavailable during SSR and all reserved screens need the same gate.

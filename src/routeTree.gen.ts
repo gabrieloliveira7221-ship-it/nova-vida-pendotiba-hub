@@ -10,20 +10,25 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AcessoRouteImport } from './routes/acesso'
 import { Route as AgendaRouteImport } from './routes/agenda'
-import { Route as AtendimentosRouteImport } from './routes/atendimentos'
 import { Route as ConhecaRouteImport } from './routes/conheca'
 import { Route as ContatoRouteImport } from './routes/contato'
-import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as MinisteriosRouteImport } from './routes/ministerios'
-import { Route as PainelRouteImport } from './routes/painel'
-import { Route as PessoasRouteImport } from './routes/pessoas'
-import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as AuthenticatedAtendimentosRouteImport } from './routes/_authenticated/atendimentos'
+import { Route as AuthenticatedEventosRouteImport } from './routes/_authenticated/eventos'
+import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
+import { Route as AuthenticatedPessoasRouteImport } from './routes/_authenticated/pessoas'
+import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AcessoRoute = AcessoRouteImport.update({
@@ -36,11 +41,6 @@ const AgendaRoute = AgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AtendimentosRoute = AtendimentosRouteImport.update({
-  id: '/atendimentos',
-  path: '/atendimentos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ConhecaRoute = ConhecaRouteImport.update({
   id: '/conheca',
   path: '/conheca',
@@ -51,71 +51,78 @@ const ContatoRoute = ContatoRouteImport.update({
   path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EventosRoute = EventosRouteImport.update({
-  id: '/eventos',
-  path: '/eventos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MinisteriosRoute = MinisteriosRouteImport.update({
   id: '/ministerios',
   path: '/ministerios',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PainelRoute = PainelRouteImport.update({
+const AuthenticatedAtendimentosRoute =
+  AuthenticatedAtendimentosRouteImport.update({
+    id: '/atendimentos',
+    path: '/atendimentos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedEventosRoute = AuthenticatedEventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
   id: '/painel',
   path: '/painel',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const PessoasRoute = PessoasRouteImport.update({
+const AuthenticatedPessoasRoute = AuthenticatedPessoasRouteImport.update({
   id: '/pessoas',
   path: '/pessoas',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const RelatoriosRoute = RelatoriosRouteImport.update({
+const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/acesso': typeof AcessoRoute
   '/agenda': typeof AgendaRoute
-  '/atendimentos': typeof AtendimentosRoute
   '/conheca': typeof ConhecaRoute
   '/contato': typeof ContatoRoute
-  '/eventos': typeof EventosRoute
   '/ministerios': typeof MinisteriosRoute
-  '/painel': typeof PainelRoute
-  '/pessoas': typeof PessoasRoute
-  '/relatorios': typeof RelatoriosRoute
+  '/atendimentos': typeof AuthenticatedAtendimentosRoute
+  '/eventos': typeof AuthenticatedEventosRoute
+  '/painel': typeof AuthenticatedPainelRoute
+  '/pessoas': typeof AuthenticatedPessoasRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/acesso': typeof AcessoRoute
   '/agenda': typeof AgendaRoute
-  '/atendimentos': typeof AtendimentosRoute
   '/conheca': typeof ConhecaRoute
   '/contato': typeof ContatoRoute
-  '/eventos': typeof EventosRoute
   '/ministerios': typeof MinisteriosRoute
-  '/painel': typeof PainelRoute
-  '/pessoas': typeof PessoasRoute
-  '/relatorios': typeof RelatoriosRoute
+  '/atendimentos': typeof AuthenticatedAtendimentosRoute
+  '/eventos': typeof AuthenticatedEventosRoute
+  '/painel': typeof AuthenticatedPainelRoute
+  '/pessoas': typeof AuthenticatedPessoasRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/acesso': typeof AcessoRoute
   '/agenda': typeof AgendaRoute
-  '/atendimentos': typeof AtendimentosRoute
   '/conheca': typeof ConhecaRoute
   '/contato': typeof ContatoRoute
-  '/eventos': typeof EventosRoute
   '/ministerios': typeof MinisteriosRoute
-  '/painel': typeof PainelRoute
-  '/pessoas': typeof PessoasRoute
-  '/relatorios': typeof RelatoriosRoute
+  '/_authenticated/atendimentos': typeof AuthenticatedAtendimentosRoute
+  '/_authenticated/eventos': typeof AuthenticatedEventosRoute
+  '/_authenticated/painel': typeof AuthenticatedPainelRoute
+  '/_authenticated/pessoas': typeof AuthenticatedPessoasRoute
+  '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -123,11 +130,11 @@ export interface FileRouteTypes {
     | '/'
     | '/acesso'
     | '/agenda'
-    | '/atendimentos'
     | '/conheca'
     | '/contato'
-    | '/eventos'
     | '/ministerios'
+    | '/atendimentos'
+    | '/eventos'
     | '/painel'
     | '/pessoas'
     | '/relatorios'
@@ -136,41 +143,38 @@ export interface FileRouteTypes {
     | '/'
     | '/acesso'
     | '/agenda'
-    | '/atendimentos'
     | '/conheca'
     | '/contato'
-    | '/eventos'
     | '/ministerios'
+    | '/atendimentos'
+    | '/eventos'
     | '/painel'
     | '/pessoas'
     | '/relatorios'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/acesso'
     | '/agenda'
-    | '/atendimentos'
     | '/conheca'
     | '/contato'
-    | '/eventos'
     | '/ministerios'
-    | '/painel'
-    | '/pessoas'
-    | '/relatorios'
+    | '/_authenticated/atendimentos'
+    | '/_authenticated/eventos'
+    | '/_authenticated/painel'
+    | '/_authenticated/pessoas'
+    | '/_authenticated/relatorios'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AcessoRoute: typeof AcessoRoute
   AgendaRoute: typeof AgendaRoute
-  AtendimentosRoute: typeof AtendimentosRoute
   ConhecaRoute: typeof ConhecaRoute
   ContatoRoute: typeof ContatoRoute
-  EventosRoute: typeof EventosRoute
   MinisteriosRoute: typeof MinisteriosRoute
-  PainelRoute: typeof PainelRoute
-  PessoasRoute: typeof PessoasRoute
-  RelatoriosRoute: typeof RelatoriosRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,6 +184,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/acesso': {
@@ -196,13 +207,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgendaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/atendimentos': {
-      id: '/atendimentos'
-      path: '/atendimentos'
-      fullPath: '/atendimentos'
-      preLoaderRoute: typeof AtendimentosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/conheca': {
       id: '/conheca'
       path: '/conheca'
@@ -217,13 +221,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/eventos': {
-      id: '/eventos'
-      path: '/eventos'
-      fullPath: '/eventos'
-      preLoaderRoute: typeof EventosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/ministerios': {
       id: '/ministerios'
       path: '/ministerios'
@@ -231,42 +228,71 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MinisteriosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/painel': {
-      id: '/painel'
+    '/_authenticated/atendimentos': {
+      id: '/_authenticated/atendimentos'
+      path: '/atendimentos'
+      fullPath: '/atendimentos'
+      preLoaderRoute: typeof AuthenticatedAtendimentosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/eventos': {
+      id: '/_authenticated/eventos'
+      path: '/eventos'
+      fullPath: '/eventos'
+      preLoaderRoute: typeof AuthenticatedEventosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/painel': {
+      id: '/_authenticated/painel'
       path: '/painel'
       fullPath: '/painel'
-      preLoaderRoute: typeof PainelRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedPainelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/pessoas': {
-      id: '/pessoas'
+    '/_authenticated/pessoas': {
+      id: '/_authenticated/pessoas'
       path: '/pessoas'
       fullPath: '/pessoas'
-      preLoaderRoute: typeof PessoasRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedPessoasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/relatorios': {
-      id: '/relatorios'
+    '/_authenticated/relatorios': {
+      id: '/_authenticated/relatorios'
       path: '/relatorios'
       fullPath: '/relatorios'
-      preLoaderRoute: typeof RelatoriosRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAtendimentosRoute: typeof AuthenticatedAtendimentosRoute
+  AuthenticatedEventosRoute: typeof AuthenticatedEventosRoute
+  AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
+  AuthenticatedPessoasRoute: typeof AuthenticatedPessoasRoute
+  AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAtendimentosRoute: AuthenticatedAtendimentosRoute,
+  AuthenticatedEventosRoute: AuthenticatedEventosRoute,
+  AuthenticatedPainelRoute: AuthenticatedPainelRoute,
+  AuthenticatedPessoasRoute: AuthenticatedPessoasRoute,
+  AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AcessoRoute: AcessoRoute,
   AgendaRoute: AgendaRoute,
-  AtendimentosRoute: AtendimentosRoute,
   ConhecaRoute: ConhecaRoute,
   ContatoRoute: ContatoRoute,
-  EventosRoute: EventosRoute,
   MinisteriosRoute: MinisteriosRoute,
-  PainelRoute: PainelRoute,
-  PessoasRoute: PessoasRoute,
-  RelatoriosRoute: RelatoriosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -8,6 +8,13 @@
       "when": 1794453965780,
       "tag": "0000_banco_nova_vida_modelo_logico",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794454330844,
+      "tag": "0001_criar_usuario_ao_cadastrar_conta",
+      "breakpoints": true
     }
   ]
 }
