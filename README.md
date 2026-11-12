@@ -1,6 +1,6 @@
-# nova vida pendotiba
+# Nova Vida Pendotiba
 
-sistema web da **igreja nova vida pendotiba** (niterói – rj), feito pro projeto de extensão do
+sistema web da **Igreja Nova Vida Pendotiba** (Niterói – RJ), feito pro projeto de extensão do
 curso de sistemas de informação da unilasalle-rj. sim, a gente fez um sistema pra igreja e tá
 rodando de verdade, sem caô
 
